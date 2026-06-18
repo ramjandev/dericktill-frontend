@@ -1,0 +1,36 @@
+export interface DealInputs {
+  streetAddress: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  bedrooms: number;
+  purchasePrice: number;
+  downPayment: number;
+  downPaymentPercent: number;
+  arv: number;
+  monthlyRent: number;
+  rehabCost: number;
+  propertyTax: number;
+  insurance: number;
+  utilities: number;
+  otherExpenses: number;
+  propertyLink: string;
+  vacancyRate: number;
+  maintenanceRate: number;
+  capexRate: number;
+  propertyMgmtRate: number;
+  refinanceLtv: number;
+  refinanceInterestRate: number;
+  refinanceLoanTerm: number;
+  closingCost: number;
+  refinanceCost: number;
+  holdingCost: number;
+  interestRate: number;
+  loanTerm: number;
+  loanPoints: number;
+  // Turnkey-specific
+  lenderFees: number;
+  marketRent: number;
+  section8Rent: number;
+  crimeScore: number;
+}
