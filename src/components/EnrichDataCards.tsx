@@ -141,7 +141,6 @@ const EnrichDataCards: React.FC<EnrichDataCardsProps> = ({ showCrimeData }) => {
         )}
       </CardContainer>
 
-      {/* ── Comparable Properties ──────────────────────── */}
       <CardContainer className="">
         <div className="flex items-start justify-between mb-4">
           <div>
@@ -237,10 +236,7 @@ const EnrichDataCards: React.FC<EnrichDataCardsProps> = ({ showCrimeData }) => {
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center py-6">
-              <BsPlusSquare size={28} className="text-[#99A1AF] mb-3" />
-              <CommonHeader size="md" className="text-[#717182]!">
-                Enter address above to view comparable properties
-              </CommonHeader>
+              No comparable properties found
             </div>
           )}
         </div>

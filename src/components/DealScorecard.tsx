@@ -1,7 +1,7 @@
 import React from "react";
 import CardContainer from "./common/CardContainer";
 import CommonHeader from "./common/header/CommonHeader";
-import type { NormalizedResults } from "./DealResultsPanel";
+import type { Scoreboard } from "./DealResultsPanel";
 
 type ScoreColor = "red" | "amber" | "green";
 
@@ -13,7 +13,7 @@ interface Metric {
 }
 
 interface DealScorecardProps {
-  results: NormalizedResults;
+  results: Scoreboard;
 }
 
 const COLOR_MAP: Record<
@@ -56,18 +56,17 @@ function getColorFromRating(rating?: string): ScoreColor {
 }
 
 const DealScorecard: React.FC<DealScorecardProps> = ({ results }) => {
-  const totalScore = results.dealScoreboard?.totalScore ?? 0;
+  const totalScore = results?.totalScore ?? 0;
   const totalMax = 100;
 
-  // ✅ FIX: TRUST BACKEND, NOT SCORE MATH
-  const overallColor = getColorFromRating(results.dealScoreboard?.rating);
+  const overallColor = getColorFromRating(results?.rating);
 
   const { badge: badgeClass } = COLOR_MAP[overallColor];
 
-  const dealLabel = results.dealScoreboard?.rating ?? DEAL_LABELS[overallColor];
+  const dealLabel = results?.rating ?? DEAL_LABELS[overallColor];
 
   const metrics: Metric[] =
-    results.dealScoreboard?.breakdown?.map((item) => {
+    results?.breakdown?.map((item) => {
       const max =
         item.name === "Cash Flow"
           ? 25

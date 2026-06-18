@@ -15,22 +15,20 @@ const Pagination: React.FC<PaginationProps> = ({
   const pages: (number | string)[] = [];
 
   if (totalPages <= 4) {
-    // Show all pages if 4 or less
     for (let i = 1; i <= totalPages; i++) pages.push(i);
   } else {
-    // Always show first and last
     const left = Math.max(currentPage - 1, 2);
     const right = Math.min(currentPage + 1, totalPages - 1);
 
-    pages.push(1); // first page
+    pages.push(1);
 
-    if (left > 2) pages.push("..."); // left ellipsis
+    if (left > 2) pages.push("...");
 
-    for (let i = left; i <= right; i++) pages.push(i); // middle pages
+    for (let i = left; i <= right; i++) pages.push(i);
 
-    if (right < totalPages - 1) pages.push("..."); // right ellipsis
+    if (right < totalPages - 1) pages.push("...");
 
-    pages.push(totalPages); // last page
+    pages.push(totalPages);
   }
 
   return (
@@ -38,7 +36,7 @@ const Pagination: React.FC<PaginationProps> = ({
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className="flex items-center gap-1 px-3 py-1 text-sm rounded-md disabled:opacity-40 hover:bg-gray-100 cursor-pointer text-[#09090B]"
+        className="flex items-center gap-1 px-3 py-1 text-sm rounded-md disabled:opacity-40 hover:bg-gray-100 cursor-pointer text-[#09090B] bg-white"
       >
         <ChevronLeft size={16} />
         Previous
@@ -46,7 +44,7 @@ const Pagination: React.FC<PaginationProps> = ({
 
       {pages.map((page, idx) =>
         page === "..." ? (
-          <span key={idx} className="px-3 py-1 text-sm">
+          <span key={idx} className="px-3 py-1 text-sm text-white">
             ...
           </span>
         ) : (
@@ -56,7 +54,7 @@ const Pagination: React.FC<PaginationProps> = ({
             className={`px-3 py-1 text-sm rounded-md cursor-pointer ${
               currentPage === page
                 ? "bg-white border border-[#E4E4E7] text-[#09090B]"
-                : "hover:bg-gray-100"
+                : " text-white"
             }`}
           >
             {page}
@@ -67,7 +65,7 @@ const Pagination: React.FC<PaginationProps> = ({
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className="flex items-center gap-1 px-3 py-1 text-sm rounded-md disabled:opacity-40 hover:bg-gray-100 cursor-pointer text-[#09090B]"
+        className="flex items-center gap-1 px-3 py-1 text-sm rounded-md disabled:opacity-40 hover:bg-gray-100 cursor-pointer text-[#09090B] bg-white"
       >
         Next
         <ChevronRight size={16} />

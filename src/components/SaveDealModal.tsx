@@ -11,6 +11,7 @@ import type {
 } from "@/store/features/property/types/output";
 import { X } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import ButtonWithLoading from "./common/button/ButtonWithLoading";
 import CommonButton from "./common/button/CommonButton";
 import CardContainer from "./common/CardContainer";
@@ -47,6 +48,8 @@ const SaveDealModal: React.FC<SaveDealModalProps> = ({
   const [name, setName] = useState("");
 
   const isLoading = isLoadingBrrrr || isLoadingTurnkey || isLoadingSection8;
+
+  const navigate = useNavigate();
   const handleSave = async () => {
     if (!response || !name.trim()) return;
     try {
@@ -149,6 +152,7 @@ const SaveDealModal: React.FC<SaveDealModalProps> = ({
         }).unwrap();
       }
 
+      navigate("/saved");
       onClose();
     } catch (error) {
       console.error("Save error:", error);

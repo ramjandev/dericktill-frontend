@@ -9,7 +9,6 @@ import SaveDetails from "@/components/SaveDetails";
 import {
   useCalculationDetailsQuery,
   useDeleteDealMutation,
-  useEnrichAddressMutation,
   useGetCalculationQuery,
 } from "@/store/features/property/propertyApi";
 import { formatDate } from "@/utils/calculations";
@@ -81,17 +80,7 @@ const SavedDealsPage = () => {
   };
   const lists = new Array(9).fill(null);
 
-  const [enrichAddress] = useEnrichAddressMutation();
-
-  const handleEnrichAddress = async (address: string) => {
-    try {
-      const response = await enrichAddress({ address }).unwrap();
-
-      console.log("Enriched Address Response:", response);
-    } catch (error) {
-      console.error("Enrich address failed:", error);
-    }
-  };
+  console.log("savedDeals.length", savedDeals.length > 10);
   return (
     <div className="">
       {!selectedDealId ? (
@@ -109,19 +98,12 @@ const SavedDealsPage = () => {
             </div>
             <CommonButton
               onClick={handleNewDeal}
-              variant="secondary"
+              variant="primary"
               className=""
             >
               <Plus size={16} />
               <span>New Deal</span>
             </CommonButton>
-
-            <button
-              onClick={() => handleEnrichAddress("123 Main St, Anytown, USA")}
-              className="ml-4 px-4 py-2 bg-blue-600 text-white rounded-md"
-            >
-              Enrich Address
-            </button>
           </div>
 
           {isLoading ? (
@@ -235,7 +217,7 @@ const SavedDealsPage = () => {
           onCancel={() => setDeleteId(null)}
         />
       )}
-      {!selectedDeal && savedDeals.length > 0 && !dealDetailsLoading && (
+      {!selectedDeal && savedDeals.length > 10 && !dealDetailsLoading && (
         <div className="py-8">
           <Pagination
             currentPage={Number(page)}

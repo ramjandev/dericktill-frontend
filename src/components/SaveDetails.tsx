@@ -1,15 +1,21 @@
 import CardContainer from "@/components/common/CardContainer";
 import CommonContainer from "@/components/common/CommonContainer";
 import CommonHeader from "@/components/common/header/CommonHeader";
-import type { PropertyData } from "@/store/features/property/types/calculation";
+import type {
+  DealStatus,
+  PropertyData,
+  ScoreStatus,
+} from "@/store/features/property/types/calculation";
 import { formatDateTime } from "@/utils/calculations";
-import { Calendar, CheckCircle, Home, TrendingUp, XCircle } from "lucide-react";
-import { FaPercent } from "react-icons/fa";
+import { Calendar } from "lucide-react";
 import { IoIosArrowBack } from "react-icons/io";
-import { LuDollarSign } from "react-icons/lu";
-import { RiCircleFill } from "react-icons/ri";
-import { formatCurrencyDecimal } from "../utils/calculations";
-import MetricCard from "./MetricCard";
+import BrrrCoreMetricsCard from "./BrrrCoreMetricsCard";
+import type { Scoreboard } from "./DealResultsPanel";
+import DealScorecard from "./DealScorecard";
+import FinancingMortgagesCard from "./FinancingMortgagesCard";
+import IncomeExpensesCard from "./IncomeExpensesCard";
+import KeyMetricsCard from "./KeyMetricsCard";
+import StatusBoardDeal from "./StatusBoardDeal";
 
 interface SaveDetailsProps {
   selectedDeal: PropertyData;
@@ -27,10 +33,8 @@ const SaveDetails: React.FC<SaveDetailsProps> = ({
   const noi = parseFloat(
     selectedDeal?.noi ?? selectedDeal?.netOperatingIncome ?? "0",
   );
-  const dscr = selectedDeal?.dscr ?? 0;
   const capRate = selectedDeal?.capRate ?? 0;
   const cashOnCashReturn = selectedDeal?.cashOnCashReturn ?? 0;
-  const onePercentRule = selectedDeal?.onePercentRule ?? false;
 
   const dealMetrics = [
     { label: "Cash Flow", value: `$${monthlyCashFlow.toFixed(2)}/mo` },
@@ -38,58 +42,56 @@ const SaveDetails: React.FC<SaveDetailsProps> = ({
     { label: "Cap Rate", value: `${capRate}%` },
   ];
 
-  const ratingColor =
-    selectedDeal.scoreBoardStatus === "GOOD DEAL"
-      ? {
-          bg: "bg-green-50",
-          border: "border-green-200",
-          text: "text-green-700",
-          dot: "bg-green-500",
-        }
-      : selectedDeal.scoreBoardStatus === "AVERAGE DEAL"
-        ? {
-            bg: "bg-yellow-50",
-            border: "border-yellow-200",
-            text: "text-yellow-700",
-            dot: "bg-yellow-500",
-          }
-        : {
-            bg: "bg-red-50",
-            border: "border-red-200",
-            text: "text-red-600",
-            dot: "bg-red-500",
-          };
-
   const handleBackClick = () => {
     setSelectedDealId(null);
     setPage(1);
   };
+
+  // Derived income fields from flat saved data
+  const monthlyRent = parseFloat(selectedDeal?.monthlyRent ?? "0");
+  const annualRent = parseFloat(selectedDeal?.annualRent ?? "0");
+  const effectiveIncome = parseFloat(selectedDeal?.effectiveIncome ?? "0");
+  const totalExpenses = parseFloat(selectedDeal?.totalExpenses ?? "0");
+  const monthlyMortgage = parseFloat(selectedDeal?.monthlyMortgage ?? "0");
+  const annualMortgage = parseFloat(selectedDeal?.annualMortgage ?? "0");
+  const purchaseLoanAmount = parseFloat(
+    selectedDeal?.purchaseLoanAmount ?? "0",
+  );
+  const loanPointsCost = parseFloat(selectedDeal?.loanPointsCost ?? "0");
+
+  type ScoreBreakdown = {
+    scoreBreakdownId: string;
+    propertyId: string;
+    name: string;
+    value: number;
+    score: number;
+    status: ScoreStatus;
+  };
+  const scoreboard: Scoreboard = {
+    totalScore: selectedDeal.totalScore ?? 0,
+    rating: (selectedDeal.scoreBoardStatus as DealStatus) ?? "BAD DEAL",
+    breakdown: selectedDeal.breakdown.map((item: ScoreBreakdown) => ({
+      name: item.name,
+      value: item.value,
+      score: item.score,
+      status: item.status,
+    })),
+  };
+
+  const ratingColorClass =
+    scoreboard.rating === "GOOD DEAL"
+      ? "text-green-600"
+      : scoreboard.rating === "AVERAGE DEAL"
+        ? "text-yellow-600"
+        : "text-red-600";
   return (
     <div>
       <CommonContainer>
-        <CardContainer className="bg-[#FEF2F2]! border border-[#FFC9C9]! flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <span className="text-[#9F0712]">
-              <RiCircleFill size={24} />
-            </span>
-            <span className="text-[#9F0712] text-2xl font-extrabold tracking-tight">
-              {selectedDeal?.scoreBoardStatus ?? "N/A"}
-            </span>
-          </div>
-
-          <div className="grid grid-cols-3 gap-5">
-            {dealMetrics.map(({ label, value }) => (
-              <div key={label} className="flex flex-col gap-2">
-                <span className="text-xs text-[#4A5565] font-medium">
-                  {label}
-                </span>
-                <span className="text-xl text-[#9F0712] font-bold">
-                  {value}
-                </span>
-              </div>
-            ))}
-          </div>
-        </CardContainer>
+        <StatusBoardDeal
+          dealMetrics={dealMetrics}
+          dealRating={scoreboard.rating}
+          ratingColorClass={ratingColorClass}
+        />
 
         <div className="my-6 flex justify-end">
           <button
@@ -288,312 +290,47 @@ const SaveDetails: React.FC<SaveDetailsProps> = ({
           </div>
 
           <div className="flex-1 space-y-6">
-            <CardContainer className="">
-              <CommonHeader className="pb-4">Key Metrics</CommonHeader>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <MetricCard
-                  label="Monthly Cash Flow"
-                  value={`$${monthlyCashFlow.toFixed(2)}/mo`}
-                  icon={<LuDollarSign />}
-                  iconBgColor="bg-[#DCFCE7]"
-                  iconColor="text-[#00A63E]"
-                />
-                <MetricCard
-                  label="Annual Net Cash Flow"
-                  value={
-                    selectedDeal?.annualNetCashFlow
-                      ? `$${annualNetCashFlow.toFixed(2)}`
-                      : "N/A"
-                  }
-                  icon={<TrendingUp />}
-                  iconBgColor="bg-[#DBEAFE]"
-                  iconColor="text-[#155DFC]"
-                />
-                <MetricCard
-                  label="Cash-on-Cash Return"
-                  value={
-                    cashOnCashReturn !== null ? `${cashOnCashReturn}%` : "N/A"
-                  }
-                  icon={<FaPercent />}
-                  iconBgColor="bg-[#F3E8FF]"
-                  iconColor="text-[#9810FA]"
-                />
-                <MetricCard
-                  label="Cap Rate"
-                  value={capRate !== null ? `${capRate}%` : "N/A"}
-                  icon={<Home />}
-                  iconBgColor="bg-[#FFEDD4]"
-                  iconColor="text-[#F54900]"
-                />
-                <MetricCard label="DSCR" value={dscr ? `${dscr}` : "N/A"} />
-                <MetricCard
-                  label="1% Rule"
-                  value={
-                    onePercentRule !== null
-                      ? onePercentRule
-                        ? "✓ Pass"
-                        : "✗ Fail"
-                      : "N/A"
-                  }
-                />
-              </div>
-              <div className="mt-3 bg-[#F3F4F6] rounded-xl p-4">
-                <CommonHeader size="sm">
-                  Net Operating Income (NOI)
-                </CommonHeader>
-                <CommonHeader size="2xl">${noi.toFixed(2)}/mo</CommonHeader>
-              </div>
-            </CardContainer>
+            <KeyMetricsCard
+              monthlyCashFlow={monthlyCashFlow}
+              annualNetCashFlow={selectedDeal.annualNetCashFlow}
+              cashOnCashReturn={selectedDeal.cashOnCashReturn}
+              postRefiCoC={selectedDeal.postRefiCoC}
+              capRate={selectedDeal.capRate}
+              dscr={selectedDeal.dscr}
+              noi={noi}
+            />
 
-            <CardContainer className="">
-              <CommonHeader size="lg">Income & Expenses</CommonHeader>
-              <div className="space-y-2 mt-2">
-                <div className="flex justify-between items-center">
-                  <CommonHeader size="lg" className="text-[#008236]!">
-                    Income
-                  </CommonHeader>
-                </div>
-                <div className="flex justify-between">
-                  <CommonHeader size="sm">Monthly Income</CommonHeader>
-                  <CommonHeader
-                    size="md"
-                    className="text-[#008236]! font-medium!"
-                  >
-                    $
-                    {selectedDeal?.monthlyRent ??
-                      selectedDeal?.effectiveIncome ??
-                      "N/A"}
-                  </CommonHeader>
-                </div>
-                {selectedDeal?.effectiveIncome && (
-                  <div className="flex justify-between">
-                    <CommonHeader size="sm">Effective Income</CommonHeader>
-                    <CommonHeader
-                      size="md"
-                      className="text-[#008236]! font-medium!"
-                    >
-                      ${selectedDeal.effectiveIncome}
-                    </CommonHeader>
-                  </div>
+            <IncomeExpensesCard
+              monthlyRent={monthlyRent}
+              annualRent={annualRent}
+              effectiveIncome={effectiveIncome}
+              totalExpenses={totalExpenses}
+              netCashFlow={annualNetCashFlow}
+            />
+
+            {selectedDeal.strategy === "BRRRR" && (
+              <BrrrCoreMetricsCard
+                allInCost={parseFloat(selectedDeal.allInCost ?? "0")}
+                initialCashInvested={parseFloat(
+                  selectedDeal.initialCashInvested ?? "0",
                 )}
-                {selectedDeal?.annualRent && (
-                  <div className="flex justify-between">
-                    <CommonHeader size="sm">Annual Rent</CommonHeader>
-                    <CommonHeader
-                      size="md"
-                      className="text-[#008236]! font-medium!"
-                    >
-                      ${selectedDeal.annualRent}
-                    </CommonHeader>
-                  </div>
+                refinanceLoanAmount={parseFloat(
+                  selectedDeal.refinanceLoanAmount ?? "0",
                 )}
+                cashOutAmount={parseFloat(selectedDeal.cashOutAmount ?? "0")}
+                cashLeftInDeal={parseFloat(selectedDeal.cashLeftInDeal ?? "0")}
+                equityCaptured={parseFloat(selectedDeal.equityCaptured ?? "0")}
+              />
+            )}
 
-                <div className="border-t-[1.173px] border-[#F3F4F6] pt-2 mt-2">
-                  <CommonHeader size="lg" className="text-[#C10007]!">
-                    Expenses
-                  </CommonHeader>
-                </div>
-                {[
-                  {
-                    label: "Mortgage Payment",
-                    value: selectedDeal?.monthlyMortgage ?? null,
-                  },
-                  {
-                    label: "Annual Mortgage",
-                    value: selectedDeal?.annualMortgage ?? null,
-                  },
-                  {
-                    label: "Property Tax",
-                    value: selectedDeal?.annualPropertyTax,
-                  },
-                  { label: "Insurance", value: selectedDeal?.annualInsurance },
-                  { label: "Vacancy", value: `${selectedDeal?.vacancyRate}%` },
-                  {
-                    label: "Maintenance",
-                    value: `${selectedDeal?.maintenanceRate}%`,
-                  },
-                  {
-                    label: "CapEx",
-                    value: selectedDeal?.capexRate
-                      ? `${selectedDeal.capexRate}%`
-                      : null,
-                  },
-                  {
-                    label: "Property Management",
-                    value: `${selectedDeal?.managementRate}%`,
-                  },
-                  {
-                    label: "Loan Points Cost",
-                    value: selectedDeal?.loanPointsCost ?? null,
-                  },
-                  {
-                    label: "Lender Fees",
-                    value: selectedDeal?.lenderFees ?? null,
-                  },
-                ]
-                  .filter(({ value }) => value !== null)
-                  .map(({ label, value }) => (
-                    <div
-                      key={label}
-                      className="flex justify-between text-sm border-b-[1.173px] pb-2 last:border-b-0! border-[#F3F4F6]"
-                    >
-                      <CommonHeader size="sm">{label}</CommonHeader>
-                      <CommonHeader
-                        size="md"
-                        className="text-[#C10007]! font-medium!"
-                      >
-                        {value}
-                      </CommonHeader>
-                    </div>
-                  ))}
+            <FinancingMortgagesCard
+              purchaseLoanAmount={purchaseLoanAmount}
+              loanPointsCost={loanPointsCost}
+              monthlyMortgage={monthlyMortgage}
+              annualMortgage={annualMortgage}
+            />
 
-                <div className="border-t-[1.173px] py-2 border-[#D1D5DC] flex justify-between text-sm font-semibold">
-                  <CommonHeader
-                    size="md"
-                    className="text-[#101828]! font-semibold!"
-                  >
-                    Total Expenses
-                  </CommonHeader>
-                  <span className="text-red-500 font-bold">
-                    {selectedDeal?.totalExpenses
-                      ? `$${selectedDeal.totalExpenses}`
-                      : "N/A"}
-                  </span>
-                </div>
-
-                <div className="flex justify-between bg-[#F9FAFB] p-6 border-[1.173px] border-[#E5E7EB] rounded-xl">
-                  <CommonHeader
-                    size="md"
-                    className="text-[#101828]! font-semibold!"
-                  >
-                    Net Cash Flow
-                  </CommonHeader>
-                  <span
-                    className={`text-2xl font-bold ${annualNetCashFlow >= 0 ? "text-green-600" : "text-red-600"}`}
-                  >
-                    {selectedDeal?.annualNetCashFlow
-                      ? formatCurrencyDecimal(annualNetCashFlow)
-                      : formatCurrencyDecimal(monthlyCashFlow)}
-                  </span>
-                </div>
-              </div>
-            </CardContainer>
-
-            <CardContainer className="">
-              <CommonHeader size="lg" className="mb-4">
-                Deal Scorecard
-              </CommonHeader>
-              <div className="space-y-3">
-                {[
-                  {
-                    label: "Cash Flow",
-                    sub: "Positive cash flow",
-                    value: `$${monthlyCashFlow.toFixed(2)}/mo`,
-                    pass: monthlyCashFlow >= 0,
-                  },
-                  {
-                    label: "Cap Rate",
-                    sub: "≥ 8% is good",
-                    value: capRate !== null ? `${capRate}%` : "N/A",
-                    pass: (capRate ?? 0) >= 8,
-                  },
-                  {
-                    label: "DSCR",
-                    sub: "≥ 1.25 is good",
-                    value: dscr ? dscr.toFixed(2) : "N/A",
-                    pass: (dscr ?? 0) >= 1.25,
-                  },
-                  {
-                    label: "1% Rule",
-                    sub: "Rent ≥ 1% of price",
-                    value:
-                      onePercentRule !== null
-                        ? onePercentRule
-                          ? "Pass"
-                          : "Fail"
-                        : "N/A",
-                    pass: onePercentRule ?? false,
-                  },
-                ].map(({ label, sub, value, pass }) => (
-                  <div
-                    key={label}
-                    className={`flex items-center justify-between rounded-xl p-4 border-[1.173px] ${pass ? "bg-green-50" : "bg-[#FEF2F2] border-[#FFC9C9]"}`}
-                  >
-                    <div className="flex items-center gap-2">
-                      {pass ? (
-                        <CheckCircle size={24} className="text-green-500" />
-                      ) : (
-                        <XCircle size={24} className="text-red-500" />
-                      )}
-                      <div>
-                        <CommonHeader
-                          size="md"
-                          className="text-[#101828]! font-bold!"
-                        >
-                          {label}
-                        </CommonHeader>
-                        <CommonHeader size="sm">{sub}</CommonHeader>
-                      </div>
-                    </div>
-                    <CommonHeader
-                      size="md"
-                      className="text-[#101828]! font-bold!"
-                    >
-                      {value}
-                    </CommonHeader>
-                  </div>
-                ))}
-
-                {selectedDeal?.breakdown?.length > 0 && (
-                  <div className="mt-2 space-y-2">
-                    <CommonHeader size="sm" className="text-gray-500">
-                      Full Scorecard Breakdown
-                    </CommonHeader>
-                    {selectedDeal.breakdown.map((item) => (
-                      <div
-                        key={item.scoreBreakdownId}
-                        className={`flex items-center justify-between rounded-xl p-3 border-[1.173px] ${item.status === "GOOD" ? "bg-green-50 border-green-200" : item.status === "AVERAGE" ? "bg-yellow-50 border-yellow-200" : "bg-[#FEF2F2] border-[#FFC9C9]"}`}
-                      >
-                        <div className="flex items-center gap-2">
-                          {item.status === "GOOD" ? (
-                            <CheckCircle size={18} className="text-green-500" />
-                          ) : (
-                            <XCircle size={18} className="text-red-500" />
-                          )}
-                          <CommonHeader
-                            size="sm"
-                            className="text-[#101828]! font-medium!"
-                          >
-                            {item.name}
-                          </CommonHeader>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <CommonHeader size="sm" className="text-[#101828]!">
-                            {item.value.toFixed(2)}
-                          </CommonHeader>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              <div
-                className={`mt-4 rounded-2xl border-2 ${ratingColor.border} ${ratingColor.bg} p-4 text-center`}
-              >
-                <CommonHeader
-                  size="sm"
-                  className="mb-1 text-center! justify-center!"
-                >
-                  Final Deal Rating
-                </CommonHeader>
-                <div
-                  className={`font-display text-2xl font-bold ${ratingColor.text}`}
-                >
-                  {selectedDeal.scoreBoardStatus ?? "N/A"}
-                </div>
-              </div>
-            </CardContainer>
+            <DealScorecard results={scoreboard} />
           </div>
         </div>
       </CommonContainer>

@@ -139,7 +139,6 @@ const Analyze = () => {
   const [enrichAddress, { isLoading: isEnrichLoading }] =
     useEnrichAddressMutation();
 
-  console.log("isEnrichLoading", isEnrichLoading);
   const activeTabData = TABS.find((t) => t.id === activeTab)!;
 
   const [calculateBrrrr, { isLoading: isBrrrrLoading }] =

@@ -7,9 +7,8 @@ import type {
 import { Building2, RefreshCw, TrendingUp } from "lucide-react";
 import { type Dispatch, type FC, type SetStateAction } from "react";
 import { LuSave } from "react-icons/lu";
-import { RiCircleFill } from "react-icons/ri";
 import CommonButton from "./common/button/CommonButton";
-import CardContainer from "./common/CardContainer";
+import StatusBoardDeal from "./StatusBoardDeal";
 
 interface DealCardProps {
   response:
@@ -90,40 +89,19 @@ const DealCard: FC<DealCardProps> = ({
 
         <CommonButton
           onClick={() => setShowSaveModal(true)}
-          variant="secondary"
+          variant="primary"
+          className="bg-black! text-white!"
         >
           <LuSave size={14} strokeWidth={1.8} />
           Save Deal
         </CommonButton>
       </div>
 
-      <CardContainer className="bg-[#FEF2F2]! border border-[#FFC9C9]! flex flex-col sm:flex-row sm:items-center justify-between my-2.5 gap-4">
-        <div className="flex items-center gap-2">
-          <span className={`${ratingColorClass} `}>
-            <RiCircleFill size={24} />
-          </span>
-          <span
-            className={`${ratingColorClass} text-xl sm:text-2xl font-extrabold tracking-tight`}
-          >
-            {dealRating}
-          </span>
-        </div>
-
-        <div className="grid grid-cols-3 gap-5">
-          {dealMetrics.map(({ label, value }) => (
-            <div key={label} className="flex flex-col gap-2">
-              <span className="text-xs text-[#4A5565] font-medium">
-                {label}
-              </span>
-              <span
-                className={`text-xl text-[#9F0712] font-bold ${ratingColorClass}`}
-              >
-                {value}
-              </span>
-            </div>
-          ))}
-        </div>
-      </CardContainer>
+      <StatusBoardDeal
+        dealMetrics={dealMetrics}
+        dealRating={dealRating}
+        ratingColorClass={ratingColorClass}
+      />
     </div>
   );
 };

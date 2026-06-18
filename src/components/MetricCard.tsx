@@ -2,7 +2,7 @@ import CommonHeader from "./common/header/CommonHeader";
 
 interface MetricCardProps {
   label: string;
-  value: string;
+  value: string | number;
   iconColor?: string;
   iconBgColor?: string;
   icon?: React.ReactNode;
