@@ -35,9 +35,9 @@ import type { DealInputs } from "../types";
 
 const DEFAULT_INPUTS: DealInputs = {
   streetAddress: "",
-  city: "Los Angeles",
-  state: "CA", // must be 2-letter
-  zipCode: "90001",
+  city: "",
+  state: "",
+  zipCode: "",
 
   bedrooms: 3,
 
@@ -248,9 +248,12 @@ const Analyze = () => {
   const handleCalculate: SubmitHandler<DealInputsSchema> = async (data) => {
     try {
       // Enrich address to get crime data
+      const fullAddress = `${data.streetAddress}, ${data.city}, ${data.state} ${data.zipCode}`;
+
       const enrichRes = await enrichAddress({
-        address: data.streetAddress,
+        address: fullAddress,
       }).unwrap();
+
       setShowCrimeData(enrichRes);
 
       if (activeTab === "BRRRR") {
@@ -274,15 +277,28 @@ const Analyze = () => {
     }
   };
 
-  const debouncedAddress = useDebounce(`${inputs.streetAddress}`.trim(), 800);
+  //auto enrich address
+  const fullAddress =
+    `${inputs.streetAddress}, ${inputs.city}, ${inputs.state} ${inputs.zipCode}`.trim();
+
+  const debouncedAddress = useDebounce(fullAddress, 800);
+
   useEffect(() => {
-    if (!inputs.streetAddress?.trim()) return;
+    if (
+      !inputs.streetAddress.trim() ||
+      !inputs.city.trim() ||
+      !inputs.state.trim() ||
+      !inputs.zipCode.trim()
+    ) {
+      return;
+    }
 
     const run = async () => {
       try {
         const enrichRes = await enrichAddress({
           address: debouncedAddress,
         }).unwrap();
+
         setShowCrimeData(enrichRes);
       } catch {
         setShowCrimeData(null);
@@ -290,7 +306,13 @@ const Analyze = () => {
     };
 
     run();
-  }, [debouncedAddress]);
+  }, [
+    debouncedAddress,
+    inputs.streetAddress,
+    inputs.city,
+    inputs.state,
+    inputs.zipCode,
+  ]);
 
   const dealRating =
     response && "data" in response
