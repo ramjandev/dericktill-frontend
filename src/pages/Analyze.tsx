@@ -26,7 +26,7 @@ import type {
   TurnkeyCalculationResponse,
 } from "@/store/features/property/types/output";
 import { Building2, RefreshCw, TrendingUp } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
 import DealInputsPanel from "../components/DealInputsPanel";
 import DealResultsPanel from "../components/DealResultsPanel";
@@ -250,10 +250,7 @@ const Analyze = () => {
       // Enrich address to get crime data
       const fullAddress = `${data.streetAddress}, ${data.city}, ${data.state} ${data.zipCode}`;
 
-      const enrichRes = await enrichAddress({
-        address: fullAddress,
-      }).unwrap();
-
+      const enrichRes = await fetchEnrichWithCache(fullAddress);
       setShowCrimeData(enrichRes);
 
       if (activeTab === "BRRRR") {
@@ -277,6 +274,22 @@ const Analyze = () => {
     }
   };
 
+  // Analyze.tsx
+
+  const enrichCacheRef = useRef<Map<string, PropertyEnrichResponse>>(new Map());
+
+  const fetchEnrichWithCache = async (address: string) => {
+    // Return cached result if exists
+    if (enrichCacheRef.current.has(address)) {
+      return enrichCacheRef.current.get(address)!;
+    }
+
+    const result = await enrichAddress({ address }).unwrap();
+
+    // Store in cache
+    enrichCacheRef.current.set(address, result);
+    return result;
+  };
   //auto enrich address
   const fullAddress =
     `${inputs.streetAddress}, ${inputs.city}, ${inputs.state} ${inputs.zipCode}`.trim();
@@ -289,16 +302,12 @@ const Analyze = () => {
       !inputs.city.trim() ||
       !inputs.state.trim() ||
       !inputs.zipCode.trim()
-    ) {
+    )
       return;
-    }
 
     const run = async () => {
       try {
-        const enrichRes = await enrichAddress({
-          address: debouncedAddress,
-        }).unwrap();
-
+        const enrichRes = await fetchEnrichWithCache(debouncedAddress);
         setShowCrimeData(enrichRes);
       } catch {
         setShowCrimeData(null);
@@ -306,13 +315,7 @@ const Analyze = () => {
     };
 
     run();
-  }, [
-    debouncedAddress,
-    inputs.streetAddress,
-    inputs.city,
-    inputs.state,
-    inputs.zipCode,
-  ]);
+  }, [debouncedAddress]);
 
   const dealRating =
     response && "data" in response

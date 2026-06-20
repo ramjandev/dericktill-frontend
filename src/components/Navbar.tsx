@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { LuSave } from "react-icons/lu";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, NavLink } from "react-router-dom";
-import logo from "../assets/images/logo.png";
+import logo from "../assets/images/logo.jpg";
 import CommonContainer from "./common/CommonContainer";
 
 const navItems = [

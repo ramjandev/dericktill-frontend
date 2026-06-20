@@ -194,7 +194,7 @@ const DealInputsPanel: React.FC<DealInputsPanelProps> = ({
               label="Down Payment Percent"
               value={inputs.downPaymentPercent || ""}
               onChange={handleNum("downPaymentPercent")}
-              prefix="%"
+              suffix="%"
               placeholder="20"
             />
             <Err field="downPaymentPercent" />
@@ -284,6 +284,20 @@ const DealInputsPanel: React.FC<DealInputsPanelProps> = ({
             />
             <Err field="rehabCost" />
           </div>
+
+          {dealType === "SECTION_8" && (
+            <div>
+              <InputField
+                label="Section 8 Rent"
+                value={inputs.section8Rent || ""}
+                onChange={handleNum("section8Rent")}
+                prefix="$"
+                placeholder="1800"
+              />
+              <Err field="section8Rent" />
+            </div>
+          )}
+
           {/* Turnkey-specific fields */}
           {dealType === "TURNKEY" && (
             <>
@@ -307,17 +321,8 @@ const DealInputsPanel: React.FC<DealInputsPanelProps> = ({
                 />
                 <Err field="marketRent" />
               </div>
-              <div>
-                <InputField
-                  label="Section 8 Rent"
-                  value={inputs.section8Rent || ""}
-                  onChange={handleNum("section8Rent")}
-                  prefix="$"
-                  placeholder="1800"
-                />
-                <Err field="section8Rent" />
-              </div>
-              <div>
+
+              {/* <div>
                 <InputField
                   label="Crime Score"
                   value={inputs.crimeScore || ""}
@@ -325,7 +330,7 @@ const DealInputsPanel: React.FC<DealInputsPanelProps> = ({
                   placeholder="0–100"
                 />
                 <Err field="crimeScore" />
-              </div>
+              </div> */}
             </>
           )}
         </div>
@@ -392,6 +397,7 @@ const DealInputsPanel: React.FC<DealInputsPanelProps> = ({
               value={inputs.vacancyRate || ""}
               onChange={handleNum("vacancyRate")}
               placeholder="75"
+              suffix="%"
             />
             <Err field="vacancyRate" />
           </div>
@@ -401,6 +407,7 @@ const DealInputsPanel: React.FC<DealInputsPanelProps> = ({
               value={inputs.maintenanceRate || ""}
               onChange={handleNum("maintenanceRate")}
               placeholder="7.5"
+              suffix="%"
             />
             <Err field="maintenanceRate" />
           </div>
@@ -410,6 +417,7 @@ const DealInputsPanel: React.FC<DealInputsPanelProps> = ({
               value={inputs.propertyMgmtRate || ""}
               onChange={handleNum("propertyMgmtRate")}
               placeholder="7.5"
+              suffix="%"
             />
             <Err field="propertyMgmtRate" />
           </div>
@@ -420,52 +428,56 @@ const DealInputsPanel: React.FC<DealInputsPanelProps> = ({
               value={inputs.capexRate || ""}
               onChange={handleNum("capexRate")}
               placeholder="7.5"
+              suffix="%"
             />
             <Err field="capexRate" />
           </div>
         </div>
       </CardContainer>
       {/* Refinance Details */}
-      <CardContainer className="rounded-[10px]! border-[1.173px] border-[#B9F8CF]! bg-[#F0FDF4]! space-y-4">
-        <CommonHeader className="text-[#1E2939]!">
-          <Home size={20} className="text-[#00A63E]" />
-          Refinance Details
-        </CommonHeader>
-        <div className="space-y-3">
-          <div>
-            <InputField
-              label="Refinance LTV"
-              value={inputs.refinanceLtv || ""}
-              onChange={handleNum("refinanceLtv")}
-              suffix="%"
-              placeholder="75"
-              note="e.g. 75%"
-            />
-            <Err field="refinanceLtv" />
+
+      {dealType === "BRRRR" && (
+        <CardContainer className="rounded-[10px]! border-[1.173px] border-[#B9F8CF]! bg-[#F0FDF4]! space-y-4">
+          <CommonHeader className="text-[#1E2939]!">
+            <Home size={20} className="text-[#00A63E]" />
+            Refinance Details
+          </CommonHeader>
+          <div className="space-y-3">
+            <div>
+              <InputField
+                label="Refinance LTV"
+                value={inputs.refinanceLtv || ""}
+                onChange={handleNum("refinanceLtv")}
+                suffix="%"
+                placeholder="75"
+                note="e.g. 75%"
+              />
+              <Err field="refinanceLtv" />
+            </div>
+            <div>
+              <InputField
+                label="Refinance Interest Rate"
+                value={inputs.refinanceInterestRate || ""}
+                onChange={handleNum("refinanceInterestRate")}
+                suffix="%"
+                placeholder="7.5"
+                note="annual"
+              />
+              <Err field="refinanceInterestRate" />
+            </div>
+            <div>
+              <InputField
+                label="Refinance Loan Term"
+                value={inputs.refinanceLoanTerm || ""}
+                onChange={handleNum("refinanceLoanTerm")}
+                suffix="yrs"
+                placeholder="30"
+              />
+              <Err field="refinanceLoanTerm" />
+            </div>
           </div>
-          <div>
-            <InputField
-              label="Refinance Interest Rate"
-              value={inputs.refinanceInterestRate || ""}
-              onChange={handleNum("refinanceInterestRate")}
-              suffix="%"
-              placeholder="7.5"
-              note="annual"
-            />
-            <Err field="refinanceInterestRate" />
-          </div>
-          <div>
-            <InputField
-              label="Refinance Loan Term"
-              value={inputs.refinanceLoanTerm || ""}
-              onChange={handleNum("refinanceLoanTerm")}
-              suffix="yrs"
-              placeholder="30"
-            />
-            <Err field="refinanceLoanTerm" />
-          </div>
-        </div>
-      </CardContainer>
+        </CardContainer>
+      )}
       {/* Additional Costs */}
       <CardContainer className="rounded-[10px]! border-[1.173px] border-[#E9D4FF]! bg-[#FAF5FF]! space-y-4">
         <CommonHeader className="text-[#1E2939]!">
