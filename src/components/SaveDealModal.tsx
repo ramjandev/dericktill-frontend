@@ -4,6 +4,7 @@ import {
   useSavePropertyTurnkeyMutation,
 } from "@/store/features/property/propertyApi";
 import type { StrategyType } from "@/store/features/property/types/calculation";
+import type { PropertyEnrichResponse } from "@/store/features/property/types/enrich";
 import type {
   BrrrrCalculationResponse,
   Section8DSCRResponse,
@@ -24,6 +25,8 @@ interface SaveDealModalProps {
     | Section8DSCRResponse;
   activeTab: StrategyType;
   onClose: () => void;
+
+  showCrimeData: PropertyEnrichResponse | null;
 }
 
 export const inputClass = {
@@ -38,6 +41,7 @@ const SaveDealModal: React.FC<SaveDealModalProps> = ({
   response,
   onClose,
   activeTab,
+  showCrimeData,
 }) => {
   const [savePropertyBrrrr, { isLoading: isLoadingBrrrr }] =
     useSavePropertyBrrrrMutation();
@@ -66,6 +70,7 @@ const SaveDealModal: React.FC<SaveDealModalProps> = ({
           vacancyRate: data.vacancyRate,
           maintenanceRate: data.maintenanceRate,
           managementRate: data.managementRate,
+          crimeScore: showCrimeData?.data.crime?.crimeScore ?? 0,
           capexRate: data.capexRate,
           allInCost_m: data.allInCost_m,
           initialCashInvested_m: data.initialCashInvested_m,
@@ -132,6 +137,7 @@ const SaveDealModal: React.FC<SaveDealModalProps> = ({
           annualPropertyTax: data.annualPropertyTax,
           vacancyRate: data.vacancyRate,
           maintenanceRate: data.maintenanceRate,
+          crimeScore: showCrimeData?.data.crime?.crimeScore ?? 0,
           managementRate: data.managementRate,
           capexRate: data.capexRate,
           responseData: {

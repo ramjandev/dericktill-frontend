@@ -33,6 +33,49 @@ import DealResultsPanel from "../components/DealResultsPanel";
 import SaveDealModal from "../components/SaveDealModal";
 import type { DealInputs } from "../types";
 
+interface Tab {
+  id: StrategyType;
+  label: string;
+  icon: React.ReactNode;
+  color: string;
+  bgColor: string;
+  desc: string;
+  tags: string[];
+  tabBg: string;
+}
+
+const TABS: Tab[] = [
+  {
+    id: "BRRRR",
+    label: "BRRRR",
+    icon: <RefreshCw size={14} />,
+    bgColor: " border-[#8EC5FF] bg-gradient-to-r from-[#EFF6FF] to-[#DBEAFE]",
+    color: "text-[#1C398E]!",
+    tabBg: "bg-[#BEDBFF]!",
+    desc: "Buy, Rehab, Rent, Refinance, Repeat. Purchase undervalued properties, renovate them, rent them out, then refinance to pull out equity and repeat the process.",
+    tags: ["Equity Recycling", "Forced Appreciation", "Scale Rapidly"],
+  },
+  {
+    id: "TURNKEY",
+    label: "Turnkey",
+    icon: <TrendingUp size={14} />,
+    bgColor: " border-[#7BF1A8] bg-gradient-to-r from-[#F0FDF4] to-[#DCFCE7]",
+    color: "text-[#016630]!",
+    tabBg: "bg-[#B9F8CF]",
+    desc: "Buy & Hold rental properties that are move-in ready. Focus on cash flow, appreciation, and long-term passive income with minimal renovation needed.",
+    tags: ["Immediate Cash Flow", "Low Maintenance", "Passive Income"],
+  },
+  {
+    id: "SECTION_8",
+    label: "Section 8",
+    icon: <Building2 size={14} />,
+    bgColor: "border-[#DAB2FF] bg-gradient-to-r from-[#FAF5FF] to-[#F3E8FF]",
+    color: "text-[#59168B]",
+    tabBg: "bg-[#E9D4FF]",
+    desc: "Government-subsidized housing program. Tenants pay a portion of rent while the government covers the rest, providing stable and guaranteed income.",
+    tags: ["Guaranteed Rent", "Gov Subsidized", "Stable Income"],
+  },
+];
 const DEFAULT_INPUTS: DealInputs = {
   streetAddress: "",
   city: "",
@@ -77,53 +120,13 @@ const DEFAULT_INPUTS: DealInputs = {
   lenderFees: 2000,
   marketRent: 1600,
   section8Rent: 1400,
-  crimeScore: 50,
+  crimeScore: 0,
 };
-interface Tab {
-  id: StrategyType;
-  label: string;
-  icon: React.ReactNode;
-  color: string;
-  bgColor: string;
-  desc: string;
-  tags: string[];
-  tabBg: string;
-}
-
-const TABS: Tab[] = [
-  {
-    id: "BRRRR",
-    label: "BRRRR",
-    icon: <RefreshCw size={14} />,
-    bgColor: " border-[#8EC5FF] bg-gradient-to-r from-[#EFF6FF] to-[#DBEAFE]",
-    color: "text-[#1C398E]!",
-    tabBg: "bg-[#BEDBFF]!",
-    desc: "Buy, Rehab, Rent, Refinance, Repeat. Purchase undervalued properties, renovate them, rent them out, then refinance to pull out equity and repeat the process.",
-    tags: ["Equity Recycling", "Forced Appreciation", "Scale Rapidly"],
-  },
-  {
-    id: "TURNKEY",
-    label: "Turnkey",
-    icon: <TrendingUp size={14} />,
-    bgColor: " border-[#7BF1A8] bg-gradient-to-r from-[#F0FDF4] to-[#DCFCE7]",
-    color: "text-[#016630]!",
-    tabBg: "bg-[#B9F8CF]",
-    desc: "Buy & Hold rental properties that are move-in ready. Focus on cash flow, appreciation, and long-term passive income with minimal renovation needed.",
-    tags: ["Immediate Cash Flow", "Low Maintenance", "Passive Income"],
-  },
-  {
-    id: "SECTION_8",
-    label: "Section 8",
-    icon: <Building2 size={14} />,
-    bgColor: "border-[#DAB2FF] bg-gradient-to-r from-[#FAF5FF] to-[#F3E8FF]",
-    color: "text-[#59168B]",
-    tabBg: "bg-[#E9D4FF]",
-    desc: "Government-subsidized housing program. Tenants pay a portion of rent while the government covers the rest, providing stable and guaranteed income.",
-    tags: ["Guaranteed Rent", "Gov Subsidized", "Stable Income"],
-  },
-];
 
 const Analyze = () => {
+  const [showCrimeData, setShowCrimeData] =
+    useState<PropertyEnrichResponse | null>(null);
+
   const [activeTab, setActiveTab] = useState<StrategyType>("BRRRR");
   const [inputs, setInputs] = useState<DealInputs>(DEFAULT_INPUTS);
   const [showSaveModal, setShowSaveModal] = useState(false);
@@ -134,8 +137,6 @@ const Analyze = () => {
     | null
   >(null);
 
-  const [showCrimeData, setShowCrimeData] =
-    useState<PropertyEnrichResponse | null>(null);
   const [enrichAddress, { isLoading: isEnrichLoading }] =
     useEnrichAddressMutation();
 
@@ -176,6 +177,7 @@ const Analyze = () => {
     capexRate: data.capexRate,
     interestRate: data.interestRate,
     loanTerm: data.loanTerm,
+
     refinanceLtv: data.refinanceLtv ?? 0,
     refinanceInterestRate: data.refinanceInterestRate ?? 0,
     refinanceLoanTerm: data.refinanceLoanTerm ?? 0,
@@ -400,6 +402,7 @@ const Analyze = () => {
             response={response}
             activeTab={activeTab}
             onClose={() => setShowSaveModal(false)}
+            showCrimeData={showCrimeData}
           />
         )}
       </div>

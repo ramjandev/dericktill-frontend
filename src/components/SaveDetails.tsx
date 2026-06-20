@@ -10,6 +10,7 @@ import { formatDateTime } from "@/utils/calculations";
 import { Calendar } from "lucide-react";
 import { IoIosArrowBack } from "react-icons/io";
 import BrrrCoreMetricsCard from "./BrrrCoreMetricsCard";
+import CrimeScoreCard from "./CrimeScoreCard";
 import type { Scoreboard } from "./DealResultsPanel";
 import DealScorecard from "./DealScorecard";
 import FinancingMortgagesCard from "./FinancingMortgagesCard";
@@ -290,6 +291,7 @@ const SaveDetails: React.FC<SaveDetailsProps> = ({
           </div>
 
           <div className="flex-1 space-y-6">
+            <CrimeScoreCard score={selectedDeal?.crimeScore} />
             <KeyMetricsCard
               monthlyCashFlow={monthlyCashFlow}
               annualNetCashFlow={selectedDeal.annualNetCashFlow}

@@ -41,6 +41,7 @@ type PropertyCalculation = {
   mortgage: string | null;
   purchasePrice: string | null;
   downPayment: string | null;
+  crimeScore: number;
   annualInsurance: string | null;
   annualPropertyTax: string | null;
   annualNoi: string | null;
@@ -130,6 +131,7 @@ export interface BrrrPropertyData extends BasePropertyResponse {
   totalScore: number;
   scoreBoardStatus: DealStatus;
   refinanceLoanAmount: string;
+  crimeScore: number;
 }
 
 export interface BrrrCalculationResponse {
@@ -163,6 +165,7 @@ export interface TurnkeyPropertyData extends BasePropertyResponse {
   totalScore: null;
   scoreBoardStatus: null;
   refinanceLoanAmount: null;
+  crimeScore: number;
 }
 
 export interface TurnkeyCalculationResponse {
@@ -196,6 +199,7 @@ export interface Section8PropertyData extends BasePropertyResponse {
   totalScore: number;
   scoreBoardStatus: DealStatus;
   refinanceLoanAmount: null;
+  crimeScore: number;
 }
 
 export interface Section8DSCRResponse {

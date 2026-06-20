@@ -228,6 +228,7 @@ export type SaveBRRRR = {
   refinanceLoanAmount_m: number;
   capRate_m: number;
   DSCR_m: number;
+  crimeScore: number;
   netOperatingIncome_m: number;
   incomeExpance: {
     income: {
@@ -321,6 +322,7 @@ export type SaveSection8 = {
   vacancyRate: number;
   maintenanceRate: number;
   managementRate: number;
+  crimeScore: number;
   capexRate: number;
   responseData: {
     KeyMetrics: {
