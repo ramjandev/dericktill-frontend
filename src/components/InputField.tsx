@@ -9,6 +9,7 @@ interface InputFieldProps {
   suffix?: string;
   type?: string;
   note?: string;
+  disabled?: boolean;
 }
 const InputField: React.FC<InputFieldProps> = ({
   label,
@@ -19,6 +20,7 @@ const InputField: React.FC<InputFieldProps> = ({
   suffix,
   type = "text",
   note,
+  disabled = false,
 }) => {
   return (
     <div>
@@ -39,7 +41,10 @@ const InputField: React.FC<InputFieldProps> = ({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
-          className={`${inputClass.input} ${prefix ? "pl-7" : "pl-3"}`}
+          className={`${inputClass.input} ${prefix ? "pl-7" : "pl-3"} ${
+            disabled ? "bg-gray-100 cursor-not-allowed" : ""
+          }`}
+          disabled={disabled}
         />
         {suffix && (
           <span className="absolute right-3 text-[#6A7282] text-xs">

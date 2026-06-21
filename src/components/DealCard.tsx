@@ -90,7 +90,7 @@ const DealCard: FC<DealCardProps> = ({
         <CommonButton
           onClick={() => setShowSaveModal(true)}
           variant="primary"
-          className="bg-black! text-white!"
+          className=""
         >
           <LuSave size={14} strokeWidth={1.8} />
           Save Deal

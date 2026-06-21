@@ -45,3 +45,13 @@ export interface LoginResponse {
   timestamp: string;
   path: string;
 }
+export interface VerifyOtpResponse {
+  data: {
+    success: boolean;
+    message: string;
+    token: string;
+  };
+  statusCode: number;
+  timestamp: string;
+  path: string;
+}
