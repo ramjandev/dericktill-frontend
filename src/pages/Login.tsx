@@ -77,7 +77,16 @@ const Login = () => {
           </div>
 
           <div className="relative">
-            <label className={inputClass.label}>Password</label>
+            <div className="flex items-center justify-between">
+              <label className={inputClass.label}>Password</label>
+              {/* ✅ Forgot password link */}
+              <Link
+                to="/forgot-password"
+                className="text-xs text-primary font-medium hover:underline mb-1"
+              >
+                Forgot password?
+              </Link>
+            </div>
             <input
               type={showPassword ? "text" : "password"}
               placeholder="••••••••"

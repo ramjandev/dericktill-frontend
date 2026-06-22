@@ -85,10 +85,16 @@ const DealInputsPanel: React.FC<DealInputsPanelProps> = ({
   }, [inputs, setValue]);
 
   const handleNum = (key: keyof DealInputs) => (v: string) => {
-    const parsed = v === "" ? 0 : parseFloat(v) || 0;
+    const parsed = v === "" ? 0 : (parseFloat(v) ?? 0);
     onChange(key, parsed);
     setValue(key as keyof DealInputsSchema, parsed as never);
     trigger(key as keyof DealInputsSchema);
+
+    if (key === "downPaymentPercent" && inputs.purchasePrice) {
+      const amount = (parsed / 100) * inputs.purchasePrice;
+      onChange("downPayment", amount);
+      setValue("downPayment", amount as never);
+    }
   };
 
   const handleStr = (key: keyof DealInputs) => (v: string) => {
@@ -172,7 +178,7 @@ const DealInputsPanel: React.FC<DealInputsPanelProps> = ({
           <div>
             <InputField
               label="Purchase Price"
-              value={inputs.purchasePrice || ""}
+              value={inputs.purchasePrice ?? ""}
               onChange={handleNum("purchasePrice")}
               prefix="$"
               placeholder="250000"
@@ -182,19 +188,20 @@ const DealInputsPanel: React.FC<DealInputsPanelProps> = ({
           <div>
             <InputField
               label="Down Payment"
-              value={inputs.downPayment || ""}
-              onChange={handleNum("downPayment")}
+              value={inputs.downPayment ?? ""}
+              onChange={() => {}}
               prefix="$"
               placeholder="50000"
+              disabled
             />
             <Err field="downPayment" />
           </div>
           <div>
             <InputField
               label="Down Payment Percent"
-              value={inputs.downPaymentPercent || ""}
+              value={inputs.downPaymentPercent ?? ""}
               onChange={handleNum("downPaymentPercent")}
-              prefix="%"
+              suffix="%"
               placeholder="20"
             />
             <Err field="downPaymentPercent" />
@@ -203,7 +210,7 @@ const DealInputsPanel: React.FC<DealInputsPanelProps> = ({
             <div>
               <InputField
                 label="Interest Rate"
-                value={inputs.interestRate || ""}
+                value={inputs.interestRate ?? ""}
                 onChange={handleNum("interestRate")}
                 suffix="%"
                 placeholder="7"
@@ -223,7 +230,7 @@ const DealInputsPanel: React.FC<DealInputsPanelProps> = ({
             <div>
               <InputField
                 label="Loan Term"
-                value={inputs.loanTerm || ""}
+                value={inputs.loanTerm ?? ""}
                 onChange={handleNum("loanTerm")}
                 suffix="yrs"
                 placeholder="30"
@@ -233,7 +240,7 @@ const DealInputsPanel: React.FC<DealInputsPanelProps> = ({
             <div>
               <InputField
                 label="Loan Points"
-                value={inputs.loanPoints || ""}
+                value={inputs.loanPoints ?? ""}
                 onChange={handleNum("loanPoints")}
                 prefix="$"
                 placeholder="0"
@@ -245,7 +252,7 @@ const DealInputsPanel: React.FC<DealInputsPanelProps> = ({
             <div>
               <InputField
                 label="ARV – After Repair Value"
-                value={inputs.arv || ""}
+                value={inputs.arv ?? ""}
                 onChange={handleNum("arv")}
                 prefix="$"
                 placeholder="300000"
@@ -256,41 +263,57 @@ const DealInputsPanel: React.FC<DealInputsPanelProps> = ({
           )}
         </div>
       </CardContainer>
-      {/* Income & Rehab */}
       <CardContainer className="rounded-[10px]! border-[1.173px] border-[#E9D4FF]! bg-[#FAF5FF]! space-y-4">
         <CommonHeader className="text-[#1E2939]!">
           <DollarSign size={20} className="text-[#9810FA]" />
           Income & Rehab
         </CommonHeader>
         <div className="space-y-3">
-          <div>
-            <InputField
-              label="Monthly Rent"
-              value={inputs.monthlyRent || ""}
-              onChange={handleNum("monthlyRent")}
-              prefix="$"
-              placeholder="2000"
-            />
-            <Err field="monthlyRent" />
-          </div>
+          {dealType !== "SECTION_8" && (
+            <div>
+              <InputField
+                label="Monthly Rent"
+                value={inputs.monthlyRent ?? ""}
+                onChange={handleNum("monthlyRent")}
+                prefix="$"
+                placeholder="2000"
+              />
+              <Err field="monthlyRent" />
+            </div>
+          )}
+          {dealType !== "SECTION_8" && (
+            <div>
+              <InputField
+                label="Rehab Cost"
+                value={inputs.rehabCost ?? ""}
+                onChange={handleNum("rehabCost")}
+                prefix="$"
+                placeholder="0"
+              />
+              <Err field="rehabCost" />
+            </div>
+          )}
 
-          <div>
-            <InputField
-              label="Rehab Cost"
-              value={inputs.rehabCost || ""}
-              onChange={handleNum("rehabCost")}
-              prefix="$"
-              placeholder="0"
-            />
-            <Err field="rehabCost" />
-          </div>
+          {dealType === "SECTION_8" && (
+            <div>
+              <InputField
+                label="Section 8 Rent"
+                value={inputs.section8Rent ?? ""}
+                onChange={handleNum("section8Rent")}
+                prefix="$"
+                placeholder="1800"
+              />
+              <Err field="section8Rent" />
+            </div>
+          )}
+
           {/* Turnkey-specific fields */}
           {dealType === "TURNKEY" && (
             <>
               <div>
                 <InputField
                   label="Lender Fees"
-                  value={inputs.lenderFees || ""}
+                  value={inputs.lenderFees ?? ""}
                   onChange={handleNum("lenderFees")}
                   prefix="$"
                   placeholder="0"
@@ -300,31 +323,12 @@ const DealInputsPanel: React.FC<DealInputsPanelProps> = ({
               <div>
                 <InputField
                   label="Market Rent"
-                  value={inputs.marketRent || ""}
+                  value={inputs.marketRent ?? ""}
                   onChange={handleNum("marketRent")}
                   prefix="$"
                   placeholder="2100"
                 />
                 <Err field="marketRent" />
-              </div>
-              <div>
-                <InputField
-                  label="Section 8 Rent"
-                  value={inputs.section8Rent || ""}
-                  onChange={handleNum("section8Rent")}
-                  prefix="$"
-                  placeholder="1800"
-                />
-                <Err field="section8Rent" />
-              </div>
-              <div>
-                <InputField
-                  label="Crime Score"
-                  value={inputs.crimeScore || ""}
-                  onChange={handleNum("crimeScore")}
-                  placeholder="0–100"
-                />
-                <Err field="crimeScore" />
               </div>
             </>
           )}
@@ -340,7 +344,7 @@ const DealInputsPanel: React.FC<DealInputsPanelProps> = ({
           <div>
             <InputField
               label="Property Tax"
-              value={inputs.propertyTax || ""}
+              value={inputs.propertyTax ?? ""}
               onChange={handleNum("propertyTax")}
               prefix="$"
               note="annual"
@@ -350,7 +354,7 @@ const DealInputsPanel: React.FC<DealInputsPanelProps> = ({
           <div>
             <InputField
               label="Insurance"
-              value={inputs.insurance || ""}
+              value={inputs.insurance ?? ""}
               onChange={handleNum("insurance")}
               prefix="$"
               note="annual"
@@ -360,7 +364,7 @@ const DealInputsPanel: React.FC<DealInputsPanelProps> = ({
           <div>
             <InputField
               label="Utilities"
-              value={inputs.utilities || ""}
+              value={inputs.utilities ?? ""}
               onChange={handleNum("utilities")}
               prefix="$"
               note="monthly"
@@ -370,7 +374,7 @@ const DealInputsPanel: React.FC<DealInputsPanelProps> = ({
           <div>
             <InputField
               label="Other Expenses"
-              value={inputs.otherExpenses || ""}
+              value={inputs.otherExpenses ?? ""}
               onChange={handleNum("otherExpenses")}
               prefix="$"
               note="monthly"
@@ -389,27 +393,30 @@ const DealInputsPanel: React.FC<DealInputsPanelProps> = ({
           <div>
             <InputField
               label="Vacancy Rate"
-              value={inputs.vacancyRate || ""}
+              value={inputs.vacancyRate ?? ""}
               onChange={handleNum("vacancyRate")}
               placeholder="75"
+              suffix="%"
             />
             <Err field="vacancyRate" />
           </div>
           <div>
             <InputField
               label="Maintenance Rate"
-              value={inputs.maintenanceRate || ""}
+              value={inputs.maintenanceRate ?? ""}
               onChange={handleNum("maintenanceRate")}
               placeholder="7.5"
+              suffix="%"
             />
             <Err field="maintenanceRate" />
           </div>
           <div>
             <InputField
               label="Management Rate"
-              value={inputs.propertyMgmtRate || ""}
+              value={inputs.propertyMgmtRate ?? ""}
               onChange={handleNum("propertyMgmtRate")}
               placeholder="7.5"
+              suffix="%"
             />
             <Err field="propertyMgmtRate" />
           </div>
@@ -417,55 +424,59 @@ const DealInputsPanel: React.FC<DealInputsPanelProps> = ({
           <div>
             <InputField
               label="Capex Rate"
-              value={inputs.capexRate || ""}
+              value={inputs.capexRate ?? ""}
               onChange={handleNum("capexRate")}
               placeholder="7.5"
+              suffix="%"
             />
             <Err field="capexRate" />
           </div>
         </div>
       </CardContainer>
       {/* Refinance Details */}
-      <CardContainer className="rounded-[10px]! border-[1.173px] border-[#B9F8CF]! bg-[#F0FDF4]! space-y-4">
-        <CommonHeader className="text-[#1E2939]!">
-          <Home size={20} className="text-[#00A63E]" />
-          Refinance Details
-        </CommonHeader>
-        <div className="space-y-3">
-          <div>
-            <InputField
-              label="Refinance LTV"
-              value={inputs.refinanceLtv || ""}
-              onChange={handleNum("refinanceLtv")}
-              suffix="%"
-              placeholder="75"
-              note="e.g. 75%"
-            />
-            <Err field="refinanceLtv" />
+
+      {dealType === "BRRRR" && (
+        <CardContainer className="rounded-[10px]! border-[1.173px] border-[#B9F8CF]! bg-[#F0FDF4]! space-y-4">
+          <CommonHeader className="text-[#1E2939]!">
+            <Home size={20} className="text-[#00A63E]" />
+            Refinance Details
+          </CommonHeader>
+          <div className="space-y-3">
+            <div>
+              <InputField
+                label="Refinance LTV"
+                value={inputs.refinanceLtv ?? ""}
+                onChange={handleNum("refinanceLtv")}
+                suffix="%"
+                placeholder="75"
+                note="e.g. 75%"
+              />
+              <Err field="refinanceLtv" />
+            </div>
+            <div>
+              <InputField
+                label="Refinance Interest Rate"
+                value={inputs.refinanceInterestRate ?? ""}
+                onChange={handleNum("refinanceInterestRate")}
+                suffix="%"
+                placeholder="7.5"
+                note="annual"
+              />
+              <Err field="refinanceInterestRate" />
+            </div>
+            <div>
+              <InputField
+                label="Refinance Loan Term"
+                value={inputs.refinanceLoanTerm ?? ""}
+                onChange={handleNum("refinanceLoanTerm")}
+                suffix="yrs"
+                placeholder="30"
+              />
+              <Err field="refinanceLoanTerm" />
+            </div>
           </div>
-          <div>
-            <InputField
-              label="Refinance Interest Rate"
-              value={inputs.refinanceInterestRate || ""}
-              onChange={handleNum("refinanceInterestRate")}
-              suffix="%"
-              placeholder="7.5"
-              note="annual"
-            />
-            <Err field="refinanceInterestRate" />
-          </div>
-          <div>
-            <InputField
-              label="Refinance Loan Term"
-              value={inputs.refinanceLoanTerm || ""}
-              onChange={handleNum("refinanceLoanTerm")}
-              suffix="yrs"
-              placeholder="30"
-            />
-            <Err field="refinanceLoanTerm" />
-          </div>
-        </div>
-      </CardContainer>
+        </CardContainer>
+      )}
       {/* Additional Costs */}
       <CardContainer className="rounded-[10px]! border-[1.173px] border-[#E9D4FF]! bg-[#FAF5FF]! space-y-4">
         <CommonHeader className="text-[#1E2939]!">
@@ -476,7 +487,7 @@ const DealInputsPanel: React.FC<DealInputsPanelProps> = ({
           <div>
             <InputField
               label="Closing Cost"
-              value={inputs.closingCost || ""}
+              value={inputs.closingCost ?? ""}
               onChange={handleNum("closingCost")}
               prefix="$"
               placeholder="5000"
@@ -486,7 +497,7 @@ const DealInputsPanel: React.FC<DealInputsPanelProps> = ({
           <div>
             <InputField
               label="Refinance Cost"
-              value={inputs.refinanceCost || ""}
+              value={inputs.refinanceCost ?? ""}
               onChange={handleNum("refinanceCost")}
               prefix="$"
               placeholder="3000"
@@ -496,7 +507,7 @@ const DealInputsPanel: React.FC<DealInputsPanelProps> = ({
           <div>
             <InputField
               label="Holding Cost"
-              value={inputs.holdingCost || ""}
+              value={inputs.holdingCost ?? ""}
               onChange={handleNum("holdingCost")}
               prefix="$"
               note="monthly"

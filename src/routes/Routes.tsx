@@ -4,6 +4,10 @@ import Login from "@/pages/Login";
 import NotFound from "@/pages/NotFound";
 import Register from "@/pages/Register";
 import SavedDealsPage from "@/pages/SavedDealsPage";
+import ChangePassword from "@/pages/auth/ChangePassword";
+import ForgotPassword from "@/pages/auth/ForgotPassword";
+import ResetPassword from "@/pages/auth/ResetPassword";
+import VerifyOtp from "@/pages/auth/VerifyOtp";
 import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
 import ProtectedRoute from "./ProtectedRoute";
@@ -26,23 +30,23 @@ const routes = createBrowserRouter([
             path: "saved",
             element: <SavedDealsPage />,
           },
+          {
+            path: "change-password",
+            element: <ChangePassword />,
+          },
         ],
       },
 
-      {
-        path: "register",
-        element: <Register />,
-      },
-      {
-        path: "login",
-        element: <Login />,
-      },
+      { path: "register", element: <Register /> },
+      { path: "login", element: <Login /> },
 
-      {
-        path: "*",
-        element: <NotFound />,
-      },
+      { path: "forgot-password", element: <ForgotPassword /> },
+      { path: "verify-otp", element: <VerifyOtp /> },
+      { path: "reset-password", element: <ResetPassword /> },
+
+      { path: "*", element: <NotFound /> },
     ],
   },
 ]);
+
 export default routes;

@@ -45,6 +45,8 @@ export const contentAPI = baseAPI.injectEndpoints({
         body: data,
       }),
     }),
+
+    // save
     savePropertyBrrrr: build.mutation<void, SaveBRRRR>({
       query: (data) => ({
         url: `/property/save-brrr-property`,

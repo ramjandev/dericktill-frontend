@@ -80,7 +80,6 @@ const SavedDealsPage = () => {
   };
   const lists = new Array(9).fill(null);
 
-  console.log("savedDeals.length", savedDeals.length > 10);
   return (
     <div className="">
       {!selectedDealId ? (
@@ -217,7 +216,7 @@ const SavedDealsPage = () => {
           onCancel={() => setDeleteId(null)}
         />
       )}
-      {!selectedDeal && savedDeals.length > 10 && !dealDetailsLoading && (
+      {!selectedDeal && savedDeals.length > 0 && !dealDetailsLoading && (
         <div className="py-8">
           <Pagination
             currentPage={Number(page)}

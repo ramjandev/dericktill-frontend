@@ -5,11 +5,13 @@ import type { User } from "./user";
 type AuthState = {
   user: User | null;
   accessToken: string | null;
+  resetToken: string | null;
 };
 
 const initialState: AuthState = {
   user: null,
   accessToken: null,
+  resetToken: null,
 };
 
 interface SetUserPayload {
@@ -32,6 +34,12 @@ const authSlice = createSlice({
       state.user = user;
       state.accessToken = accessToken;
     },
+    setResetToken: (state, action: PayloadAction<string>) => {
+      state.resetToken = action.payload;
+    },
+    clearResetToken: (state) => {
+      state.resetToken = null;
+    },
     logout: (state) => {
       state.user = null;
       state.accessToken = null;
@@ -39,7 +47,8 @@ const authSlice = createSlice({
   },
 });
 
-export const { setUser, logout } = authSlice.actions;
+export const { setUser, logout, setResetToken, clearResetToken } =
+  authSlice.actions;
 
 // Selectors
 export const selectUser = (state: RootState) => state.auth.user;
