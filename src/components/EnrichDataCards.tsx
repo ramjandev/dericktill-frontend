@@ -1,5 +1,6 @@
 import type { PropertyEnrichResponse } from "@/store/features/property/types/enrich";
 import { Home, Shield } from "lucide-react";
+import { useState } from "react";
 import { BsPlusSquare } from "react-icons/bs";
 import { IoAlertCircleOutline } from "react-icons/io5";
 import { formatCurrencyDecimal } from "../utils/calculations";
@@ -11,12 +12,24 @@ interface EnrichDataCardsProps {
 }
 
 const EnrichDataCards: React.FC<EnrichDataCardsProps> = ({ showCrimeData }) => {
+  const [activeTab, setActiveTab] = useState<"rentals" | "sales">("rentals");
+
   if (!showCrimeData) return null;
 
   const crime = showCrimeData.data?.crime;
   const rentals = showCrimeData.data?.comps?.rental ?? [];
+  const sold = showCrimeData.data?.comps?.sold ?? [];
+
   const avgRent = rentals.length
     ? rentals.reduce((sum, r) => sum + r.rent, 0) / rentals.length
+    : 0;
+
+  const avgSalePrice = sold.length
+    ? sold.reduce((sum, s) => sum + s.price, 0) / sold.length
+    : 0;
+
+  const avgPricePerSqFt = sold.length
+    ? sold.reduce((sum, s) => sum + s.pricePerSqFt, 0) / sold.length
     : 0;
 
   const riskStyle =
@@ -31,11 +44,20 @@ const EnrichDataCards: React.FC<EnrichDataCardsProps> = ({ showCrimeData }) => {
       ? Math.round((crime.totalIncidents / crime.population) * 100000)
       : null;
 
+  const formatSoldDate = (dateStr: string) => {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  };
+
+  const totalComps = rentals.length + sold.length;
+
   return (
     <>
-      {/* ── Crime Data ─────────────────────────────────── */}
       <CardContainer className="">
-        {/* Outer header */}
         <div className="flex items-start justify-between mb-4">
           <div>
             <div className="flex items-center gap-2">
@@ -59,7 +81,6 @@ const EnrichDataCards: React.FC<EnrichDataCardsProps> = ({ showCrimeData }) => {
 
         {crime ? (
           <>
-            {/* 4 metric boxes */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-4">
               <div className="bg-[#F9FAFB] rounded-xl p-3">
                 <p className="text-xs text-[#717182] mb-1">Crime score</p>
@@ -96,7 +117,6 @@ const EnrichDataCards: React.FC<EnrichDataCardsProps> = ({ showCrimeData }) => {
               </div>
             </div>
 
-            {/* Crime type bars */}
             <div className="space-y-2.5 mb-3">
               {crime.crimesByType?.map((c) => {
                 const isViolent = c.type.toLowerCase().includes("violent");
@@ -126,7 +146,6 @@ const EnrichDataCards: React.FC<EnrichDataCardsProps> = ({ showCrimeData }) => {
               })}
             </div>
 
-            {/* Summary */}
             <p className="text-xs text-[#717182] leading-relaxed">
               {crime.areaSummary}
             </p>
@@ -142,6 +161,7 @@ const EnrichDataCards: React.FC<EnrichDataCardsProps> = ({ showCrimeData }) => {
       </CardContainer>
 
       <CardContainer className="">
+        {/* Outer header */}
         <div className="flex items-start justify-between mb-4">
           <div>
             <div className="flex items-center gap-2">
@@ -152,14 +172,16 @@ const EnrichDataCards: React.FC<EnrichDataCardsProps> = ({ showCrimeData }) => {
               Recent rental listings and sales in the area
             </p>
           </div>
-          {rentals.length > 0 && (
+          {totalComps > 0 && (
             <span className="text-xs font-semibold px-3 py-1 rounded-full bg-[#DCFCE7] text-[#166534] whitespace-nowrap">
-              {rentals.length} rental{rentals.length > 1 ? "s" : ""} found
+              {rentals.length} rental{rentals.length !== 1 ? "s" : ""} ·{" "}
+              {sold.length} sale{sold.length !== 1 ? "s" : ""}
             </span>
           )}
         </div>
 
         <div className="bg-[#EEF2FF]/30 border-[1.173px] border-[#C6D2FF] rounded-[14px] p-5">
+          {/* Inner header */}
           <div className="flex items-center justify-between mb-1">
             <div className="flex items-center gap-1.5">
               <Home size={16} className="text-[#4F39F6]" />
@@ -173,71 +195,193 @@ const EnrichDataCards: React.FC<EnrichDataCardsProps> = ({ showCrimeData }) => {
             Recent rental listings and sales in the area
           </p>
 
-          {rentals.length > 0 ? (
-            <div className="space-y-3">
-              {/* Avg rent summary */}
-              <div className="bg-white rounded-xl border border-[#C6D2FF] px-4 py-3 flex items-center justify-between">
-                <div>
-                  <p className="text-xs text-[#717182] mb-0.5">Avg Rent</p>
-                  <p className="text-lg font-semibold text-[#4F39F6]">
-                    {formatCurrencyDecimal(avgRent)}/mo
-                  </p>
-                </div>
-                <span className="text-xs font-semibold px-3 py-1 rounded-full bg-[#EEF2FF] text-[#4F39F6]">
-                  {rentals.length} comp{rentals.length > 1 ? "s" : ""} found
-                </span>
-              </div>
+          {/* Tab switcher */}
+          {(rentals.length > 0 || sold.length > 0) && (
+            <div className="flex gap-1 bg-[#F3F4F6] rounded-lg p-1 mb-4">
+              <button
+                onClick={() => setActiveTab("rentals")}
+                className={`flex-1 text-sm font-medium py-1.5 px-3 rounded-md transition-all cursor-pointer ${
+                  activeTab === "rentals"
+                    ? "bg-white text-[#4F39F6] shadow-sm"
+                    : "text-[#717182] hover:text-[#0A0A0A]"
+                }`}
+              >
+                Rentals
+                {rentals.length > 0 && (
+                  <span
+                    className={`ml-1.5 text-xs px-1.5 py-0.5 rounded-full ${
+                      activeTab === "rentals"
+                        ? "bg-[#EEF2FF] text-[#4F39F6]"
+                        : "bg-[#E5E7EB] text-[#717182]"
+                    }`}
+                  >
+                    {rentals.length}
+                  </span>
+                )}
+              </button>
+              <button
+                onClick={() => setActiveTab("sales")}
+                className={`flex-1 text-sm font-medium py-1.5 px-3 rounded-md transition-all cursor-pointer ${
+                  activeTab === "sales"
+                    ? "bg-white text-[#4F39F6] shadow-sm"
+                    : "text-[#717182] hover:text-[#0A0A0A]"
+                }`}
+              >
+                Sales
+                {sold.length > 0 && (
+                  <span
+                    className={`ml-1.5 text-xs px-1.5 py-0.5 rounded-full ${
+                      activeTab === "sales"
+                        ? "bg-[#EEF2FF] text-[#4F39F6]"
+                        : "bg-[#E5E7EB] text-[#717182]"
+                    }`}
+                  >
+                    {sold.length}
+                  </span>
+                )}
+              </button>
+            </div>
+          )}
 
-              {/* Comp rows */}
-              {rentals.map((r) => (
-                <div
-                  key={r.id}
-                  className="bg-white rounded-xl border border-[#C6D2FF] px-4 py-3"
-                >
-                  <p className="text-sm font-semibold text-[#0A0A0A] mb-1">
-                    {r.address}
-                  </p>
-                  <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-[#717182]">
-                    <span>{r.propertyType}</span>
-                    <span>
-                      {r.bedrooms}bd / {r.bathrooms}ba
-                    </span>
-                    {r.squareFootage && (
-                      <span>{r.squareFootage.toLocaleString()} sqft</span>
-                    )}
-                    <span className="font-semibold text-[#4F39F6]">
-                      {formatCurrencyDecimal(r.rent)}/mo
+          {activeTab === "rentals" && (
+            <>
+              {rentals.length > 0 ? (
+                <div className="space-y-3">
+                  {/* Avg rent summary */}
+                  <div className="bg-white rounded-xl border border-[#C6D2FF] px-4 py-3 flex items-center justify-between">
+                    <div>
+                      <p className="text-xs text-[#717182] mb-0.5">Avg Rent</p>
+                      <p className="text-lg font-semibold text-[#4F39F6]">
+                        {formatCurrencyDecimal(avgRent)}/mo
+                      </p>
+                    </div>
+                    <span className="text-xs font-semibold px-3 py-1 rounded-full bg-[#EEF2FF] text-[#4F39F6]">
+                      {rentals.length} comp{rentals.length !== 1 ? "s" : ""}{" "}
+                      found
                     </span>
                   </div>
-                </div>
-              ))}
 
-              {/* Estimates */}
-              <div className="bg-white rounded-xl border border-[#C6D2FF] px-4 py-3 flex items-center justify-between">
-                <p className="text-sm text-[#0A0A0A]">Rent estimate</p>
-                <p className="text-sm italic text-[#99A1AF]">
-                  {showCrimeData.data?.comps?.estimates?.rentEstimate
-                    ? formatCurrencyDecimal(
-                        showCrimeData.data.comps.estimates.rentEstimate,
-                      )
-                    : "Not available"}
-                </p>
-              </div>
-              <div className="bg-white rounded-xl border border-[#C6D2FF] px-4 py-3 flex items-center justify-between">
-                <p className="text-sm text-[#0A0A0A]">Value estimate</p>
-                <p className="text-sm italic text-[#99A1AF]">
-                  {showCrimeData.data?.comps?.estimates?.valueEstimate
-                    ? formatCurrencyDecimal(
-                        showCrimeData.data.comps.estimates.valueEstimate,
-                      )
-                    : "Not available"}
-                </p>
-              </div>
-            </div>
-          ) : (
-            <div className="flex flex-col items-center justify-center py-6">
-              No comparable properties found
-            </div>
+                  {/* Rental comp rows */}
+                  {rentals.map((r) => (
+                    <div
+                      key={r.id}
+                      className="bg-white rounded-xl border border-[#C6D2FF] px-4 py-3"
+                    >
+                      <p className="text-sm font-semibold text-[#0A0A0A] mb-1">
+                        {r.address}
+                      </p>
+                      <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-[#717182]">
+                        <span>{r.propertyType}</span>
+                        <span>
+                          {r.bedrooms}bd / {r.bathrooms}ba
+                        </span>
+                        {r.squareFootage && (
+                          <span>{r.squareFootage.toLocaleString()} sqft</span>
+                        )}
+                        <span className="font-semibold text-[#4F39F6]">
+                          {formatCurrencyDecimal(r.rent)}/mo
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+
+                  {/* Estimates */}
+                  <div className="bg-white rounded-xl border border-[#C6D2FF] px-4 py-3 flex items-center justify-between">
+                    <p className="text-sm text-[#0A0A0A]">Rent estimate</p>
+                    <p className="text-sm italic text-[#99A1AF]">
+                      {showCrimeData.data?.comps?.estimates?.rentEstimate
+                        ? formatCurrencyDecimal(
+                            showCrimeData.data.comps.estimates.rentEstimate,
+                          )
+                        : "Not available"}
+                    </p>
+                  </div>
+                  <div className="bg-white rounded-xl border border-[#C6D2FF] px-4 py-3 flex items-center justify-between">
+                    <p className="text-sm text-[#0A0A0A]">Value estimate</p>
+                    <p className="text-sm italic text-[#99A1AF]">
+                      {showCrimeData.data?.comps?.estimates?.valueEstimate
+                        ? formatCurrencyDecimal(
+                            showCrimeData.data.comps.estimates.valueEstimate,
+                          )
+                        : "Not available"}
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center py-6 text-sm text-[#717182]">
+                  No rental comps found
+                </div>
+              )}
+            </>
+          )}
+
+          {activeTab === "sales" && (
+            <>
+              {sold.length > 0 ? (
+                <div className="space-y-3">
+                  {/* Avg sale summary */}
+                  <div className="bg-white rounded-xl border border-[#C6D2FF] px-4 py-3 flex items-center justify-between">
+                    <div className="flex gap-6">
+                      <div>
+                        <p className="text-xs text-[#717182] mb-0.5">
+                          Avg Sale Price
+                        </p>
+                        <p className="text-lg font-semibold text-[#4F39F6]">
+                          {formatCurrencyDecimal(avgSalePrice)}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-[#717182] mb-0.5">
+                          Avg $/sqft
+                        </p>
+                        <p className="text-lg font-semibold text-[#4F39F6]">
+                          {formatCurrencyDecimal(avgPricePerSqFt)}/ft²
+                        </p>
+                      </div>
+                    </div>
+                    <span className="text-xs font-semibold px-3 py-1 rounded-full bg-[#EEF2FF] text-[#4F39F6]">
+                      {sold.length} comp{sold.length !== 1 ? "s" : ""} found
+                    </span>
+                  </div>
+
+                  {/* Sold comp rows */}
+                  {sold.map((s) => (
+                    <div
+                      key={s.id}
+                      className="bg-white rounded-xl border border-[#C6D2FF] px-4 py-3"
+                    >
+                      <p className="text-sm font-semibold text-[#0A0A0A] mb-1">
+                        {s.address}
+                      </p>
+                      <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-[#717182]">
+                        <span>{s.propertyType}</span>
+                        <span>
+                          {s.bedrooms}bd / {s.bathrooms}ba
+                        </span>
+                        {s.squareFootage && (
+                          <span>{s.squareFootage.toLocaleString()} sqft</span>
+                        )}
+                        <span className="font-semibold text-[#4F39F6]">
+                          {formatCurrencyDecimal(s.price)}
+                        </span>
+                        <span>·</span>
+                        <span>{formatCurrencyDecimal(s.pricePerSqFt)}/ft²</span>
+                        {s.soldDate && (
+                          <>
+                            <span>·</span>
+                            <span>Sold {formatSoldDate(s.soldDate)}</span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center py-6 text-sm text-[#717182]">
+                  No sold comps found
+                </div>
+              )}
+            </>
           )}
         </div>
       </CardContainer>

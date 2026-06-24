@@ -68,7 +68,7 @@ const Navbar = () => {
             <img
               src={logo}
               alt="Feasible Logo"
-              className="w-full h-full object-cover bg-white"
+              className="w-full h-full object-cover "
             />
           </Link>
 
