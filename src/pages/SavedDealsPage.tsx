@@ -4,8 +4,8 @@ import CommonContainer from "@/components/common/CommonContainer";
 import LoadingSpinner from "@/components/common/custom/LoadingSpinner";
 import Pagination from "@/components/common/custom/Pagination";
 import CommonHeader from "@/components/common/header/CommonHeader";
-import DeleteConfirmModal from "@/components/DeleteConfirmModal";
-import SaveDetails from "@/components/SaveDetails";
+import SaveDetails from "@/components/deal/SaveDetails";
+import DeleteConfirmModal from "@/components/reuseAble/DeleteConfirmModal";
 import {
   useCalculationDetailsQuery,
   useDeleteDealMutation,

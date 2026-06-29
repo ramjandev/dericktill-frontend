@@ -1,7 +1,7 @@
 import ButtonWithLoading from "@/components/common/button/ButtonWithLoading";
 import CommonButton from "@/components/common/button/CommonButton";
 import CommonHeader from "@/components/common/header/CommonHeader";
-import { inputClass } from "@/components/SaveDealModal";
+import { inputClass } from "@/components/deal/SaveDealModal";
 import { useResetPasswordMutation } from "@/store/features/auth/auth.api";
 import { clearResetToken } from "@/store/features/auth/auth.slice";
 import type { RootState } from "@/store/store";

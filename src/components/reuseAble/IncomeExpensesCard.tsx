@@ -1,8 +1,8 @@
 // components/IncomeExpensesCard.tsx
 
-import { formatCurrencyDecimal } from "../utils/calculations";
-import CardContainer from "./common/CardContainer";
-import CommonHeader from "./common/header/CommonHeader";
+import { formatCurrencyDecimal } from "@/utils/calculations";
+import CardContainer from "../common/CardContainer";
+import CommonHeader from "../common/header/CommonHeader";
 
 interface IncomeExpensesCardProps {
   monthlyRent: number;

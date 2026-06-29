@@ -1,4 +1,4 @@
-import { inputClass } from "./SaveDealModal";
+import { inputClass } from "@/components/deal/SaveDealModal";
 
 interface InputFieldProps {
   label: string;

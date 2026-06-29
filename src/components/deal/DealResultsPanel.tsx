@@ -8,12 +8,13 @@ import type {
   Section8DSCRResponse,
   TurnkeyCalculationResponse,
 } from "@/store/features/property/types/output";
-import type { DealInputs } from "../types";
-import BrrrCoreMetricsCard from "./BrrrCoreMetricsCard";
+
+import BrrrCoreMetricsCard from "@/components/reuseAble/BrrrCoreMetricsCard";
+import FinancingMortgagesCard from "@/components/reuseAble/FinancingMortgagesCard";
+import IncomeExpensesCard from "@/components/reuseAble/IncomeExpensesCard";
+import KeyMetricsCard from "@/components/reuseAble/KeyMetricsCard";
+import type { DealInputs } from "@/types";
 import DealScorecard from "./DealScorecard";
-import FinancingMortgagesCard from "./FinancingMortgagesCard";
-import IncomeExpensesCard from "./IncomeExpensesCard";
-import KeyMetricsCard from "./KeyMetricsCard";
 
 export interface Scoreboard {
   totalScore: number;

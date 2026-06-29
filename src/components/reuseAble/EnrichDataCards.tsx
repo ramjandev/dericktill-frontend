@@ -1,11 +1,11 @@
 import type { PropertyEnrichResponse } from "@/store/features/property/types/enrich";
+import { formatCurrencyDecimal } from "@/utils/calculations";
 import { Home, Shield } from "lucide-react";
 import { useState } from "react";
 import { BsPlusSquare } from "react-icons/bs";
 import { IoAlertCircleOutline } from "react-icons/io5";
-import { formatCurrencyDecimal } from "../utils/calculations";
-import CardContainer from "./common/CardContainer";
-import CommonHeader from "./common/header/CommonHeader";
+import CardContainer from "../common/CardContainer";
+import CommonHeader from "../common/header/CommonHeader";
 
 interface EnrichDataCardsProps {
   showCrimeData: PropertyEnrichResponse | null;

@@ -1,6 +1,6 @@
 import React from "react";
-import CardContainer from "./common/CardContainer";
-import CommonHeader from "./common/header/CommonHeader";
+import CardContainer from "../common/CardContainer";
+import CommonHeader from "../common/header/CommonHeader";
 import type { Scoreboard } from "./DealResultsPanel";
 
 type ScoreColor = "red" | "amber" | "green";

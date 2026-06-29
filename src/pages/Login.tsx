@@ -1,7 +1,7 @@
 import ButtonWithLoading from "@/components/common/button/ButtonWithLoading";
 import CommonButton from "@/components/common/button/CommonButton";
 import CommonHeader from "@/components/common/header/CommonHeader";
-import { inputClass } from "@/components/SaveDealModal";
+import { inputClass } from "@/components/deal/SaveDealModal";
 import { useLoginMutation } from "@/store/features/auth/auth.api";
 import { setUser } from "@/store/features/auth/auth.slice";
 import { zodResolver } from "@hookform/resolvers/zod";

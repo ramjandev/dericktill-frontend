@@ -2,16 +2,19 @@ import CommonContainer from "@/components/common/CommonContainer";
 import MiniSpinner from "@/components/common/custom/MiniSpinner";
 import { useDebounce } from "@/components/common/custom/useDebounce";
 import TabSwitcher from "@/components/common/TabSwitcher";
-import DealCard from "@/components/DealCard";
-import EnrichDataCards from "@/components/EnrichDataCards";
-import MiniCard from "@/components/MiniCard";
+import DealCard from "@/components/deal/DealCard";
+import DealInputsPanel from "@/components/deal/DealInputsPanel";
+import EnrichDataCards from "@/components/reuseAble/EnrichDataCards";
+import HUDPropertyDashboard from "@/components/reuseAble/HUDPropertyDashboard";
+import MiniCard from "@/components/reuseAble/MiniCard";
+import StrategyCard from "@/components/reuseAble/StrategyCard";
 import type { DealInputsSchema } from "@/components/schema/dealSchema";
-import StrategyCard from "@/components/StrategyCard";
 import {
   useCalculateBrrrrMutation,
   useCalculateSection8Mutation,
   useCalculateTurnkeyMutation,
   useEnrichAddressMutation,
+  useHudSection8Mutation,
 } from "@/store/features/property/propertyApi";
 import type {
   PropertyBrrr,
@@ -20,6 +23,7 @@ import type {
 } from "@/store/features/property/types/brr";
 import type { StrategyType } from "@/store/features/property/types/calculation";
 import type { PropertyEnrichResponse } from "@/store/features/property/types/enrich";
+import type { HudResponse } from "@/store/features/property/types/hud";
 import type {
   BrrrrCalculationResponse,
   Section8DSCRResponse,
@@ -28,9 +32,8 @@ import type {
 import { Building2, RefreshCw, TrendingUp } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
-import DealInputsPanel from "../components/DealInputsPanel";
-import DealResultsPanel from "../components/DealResultsPanel";
-import SaveDealModal from "../components/SaveDealModal";
+import DealResultsPanel from "../components/deal/DealResultsPanel";
+import SaveDealModal from "../components/deal/SaveDealModal";
 import type { DealInputs } from "../types";
 
 interface Tab {
@@ -334,6 +337,43 @@ const Analyze = () => {
         ? "text-yellow-600"
         : "text-red-600";
 
+  //Hud auto enrich
+  const [hudData, setHudData] = useState<HudResponse | undefined>();
+  const [hudSection8, { isLoading: isHudEnrich }] = useHudSection8Mutation();
+
+  const hudCacheRef = useRef<Map<string, HudResponse>>(new Map());
+
+  const fetchHudWithCache = async (address: string) => {
+    if (hudCacheRef.current.has(address)) {
+      return hudCacheRef.current.get(address)!;
+    }
+
+    const result = await hudSection8({ address }).unwrap();
+    hudCacheRef.current.set(address, result);
+    return result;
+  };
+
+  useEffect(() => {
+    if (activeTab !== "SECTION_8") return;
+    if (
+      !inputs.streetAddress.trim() ||
+      !inputs.city.trim() ||
+      !inputs.state.trim() ||
+      !inputs.zipCode.trim()
+    )
+      return;
+
+    const run = async () => {
+      try {
+        const hud = await fetchHudWithCache(debouncedAddress);
+        setHudData(hud);
+      } catch {
+        setShowCrimeData(null);
+      }
+    };
+
+    run();
+  }, [debouncedAddress, activeTab]);
   return (
     <CommonContainer>
       <div className="flex-1 flex flex-col w-full">
@@ -388,10 +428,16 @@ const Analyze = () => {
               ) : (
                 <MiniCard isCalculating={isCalculating} activeTab={activeTab} />
               )}
-              {isEnrichLoading ? (
+              {isEnrichLoading || isHudEnrich ? (
                 <MiniSpinner />
               ) : (
-                <EnrichDataCards showCrimeData={showCrimeData} />
+                <>
+                  <EnrichDataCards showCrimeData={showCrimeData} />
+
+                  {activeTab === "SECTION_8" && hudData && (
+                    <HUDPropertyDashboard data={hudData} />
+                  )}
+                </>
               )}
             </div>
           </div>

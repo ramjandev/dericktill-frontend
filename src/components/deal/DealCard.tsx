@@ -7,7 +7,7 @@ import type {
 import { Building2, RefreshCw, TrendingUp } from "lucide-react";
 import { type Dispatch, type FC, type SetStateAction } from "react";
 import { LuSave } from "react-icons/lu";
-import CommonButton from "./common/button/CommonButton";
+import CommonButton from "../common/button/CommonButton";
 import StatusBoardDeal from "./StatusBoardDeal";
 
 interface DealCardProps {

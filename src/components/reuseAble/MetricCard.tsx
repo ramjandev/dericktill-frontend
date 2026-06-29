@@ -1,4 +1,4 @@
-import CommonHeader from "./common/header/CommonHeader";
+import CommonHeader from "../common/header/CommonHeader";
 
 interface MetricCardProps {
   label: string;

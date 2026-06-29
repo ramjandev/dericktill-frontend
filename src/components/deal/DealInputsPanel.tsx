@@ -3,16 +3,16 @@ import { Calculator, DollarSign, Home, Wrench } from "lucide-react";
 import { useEffect } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { IoLocationOutline } from "react-icons/io5";
-import type { DealInputs } from "../types";
 
 import type { StrategyType } from "@/store/features/property/types/calculation";
-import ButtonWithLoading from "./common/button/ButtonWithLoading";
-import CommonButton from "./common/button/CommonButton";
-import CardContainer from "./common/CardContainer";
-import CommonHeader from "./common/header/CommonHeader";
-import InputField from "./InputField";
+import type { DealInputs } from "@/types";
+import ButtonWithLoading from "../common/button/ButtonWithLoading";
+import CommonButton from "../common/button/CommonButton";
+import CardContainer from "../common/CardContainer";
+import CommonHeader from "../common/header/CommonHeader";
+import InputField from "../reuseAble/InputField";
+import { dealInputSchema, type DealInputsSchema } from "../schema/dealSchema";
 import { inputClass } from "./SaveDealModal";
-import { dealInputSchema, type DealInputsSchema } from "./schema/dealSchema";
 
 interface DealInputsPanelProps {
   inputs: DealInputs;

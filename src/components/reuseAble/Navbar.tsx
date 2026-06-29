@@ -1,3 +1,4 @@
+import logo from "@/assets/images/logo.png";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,8 +17,7 @@ import { useEffect, useState } from "react";
 import { LuSave } from "react-icons/lu";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import logo from "../assets/images/logo.png";
-import CommonContainer from "./common/CommonContainer";
+import CommonContainer from "../common/CommonContainer";
 
 const navItems = [
   { label: "Analyze", icon: Home, path: "/analyze" },

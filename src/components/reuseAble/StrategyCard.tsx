@@ -1,7 +1,7 @@
 import React from "react";
 import { FaCheck } from "react-icons/fa";
-import CardContainer from "./common/CardContainer";
-import CommonHeader from "./common/header/CommonHeader";
+import CardContainer from "../common/CardContainer";
+import CommonHeader from "../common/header/CommonHeader";
 
 interface StrategyCardProps {
   label: string;

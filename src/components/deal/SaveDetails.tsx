@@ -1,6 +1,11 @@
 import CardContainer from "@/components/common/CardContainer";
 import CommonContainer from "@/components/common/CommonContainer";
 import CommonHeader from "@/components/common/header/CommonHeader";
+import BrrrCoreMetricsCard from "@/components/reuseAble/BrrrCoreMetricsCard";
+import CrimeScoreCard from "@/components/reuseAble/CrimeScoreCard";
+import FinancingMortgagesCard from "@/components/reuseAble/FinancingMortgagesCard";
+import IncomeExpensesCard from "@/components/reuseAble/IncomeExpensesCard";
+import KeyMetricsCard from "@/components/reuseAble/KeyMetricsCard";
 import type {
   DealStatus,
   PropertyData,
@@ -9,13 +14,8 @@ import type {
 import { formatDateTime } from "@/utils/calculations";
 import { Calendar } from "lucide-react";
 import { IoIosArrowBack } from "react-icons/io";
-import BrrrCoreMetricsCard from "./BrrrCoreMetricsCard";
-import CrimeScoreCard from "./CrimeScoreCard";
 import type { Scoreboard } from "./DealResultsPanel";
 import DealScorecard from "./DealScorecard";
-import FinancingMortgagesCard from "./FinancingMortgagesCard";
-import IncomeExpensesCard from "./IncomeExpensesCard";
-import KeyMetricsCard from "./KeyMetricsCard";
 import StatusBoardDeal from "./StatusBoardDeal";
 
 interface SaveDetailsProps {

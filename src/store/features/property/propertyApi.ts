@@ -10,6 +10,7 @@ import type {
   PropertySingleCalculation,
 } from "./types/calculation";
 import type { AddressRequest, PropertyEnrichResponse } from "./types/enrich";
+import type { HudResponse } from "./types/hud";
 import type {
   BrrrrCalculationResponse,
   SaveBRRRR,
@@ -98,6 +99,13 @@ export const contentAPI = baseAPI.injectEndpoints({
         body: addressRequest,
       }),
     }),
+    hudSection8: build.mutation<HudResponse, AddressRequest>({
+      query: (addressRequest) => ({
+        url: `/property/test-hud-section8`,
+        method: "POST",
+        body: addressRequest,
+      }),
+    }),
   }),
 });
 
@@ -116,4 +124,5 @@ export const {
   useDeleteDealMutation,
   // Enrich Address
   useEnrichAddressMutation,
+  useHudSection8Mutation,
 } = contentAPI;

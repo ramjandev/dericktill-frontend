@@ -1,5 +1,5 @@
 import { RiCircleFill } from "react-icons/ri";
-import CardContainer from "./common/CardContainer";
+import CardContainer from "../common/CardContainer";
 
 interface DealMetrics {
   dealMetrics: { label: string; value: string }[];

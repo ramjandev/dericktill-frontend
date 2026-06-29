@@ -3,8 +3,8 @@ import CommonHeader from "@/components/common/header/CommonHeader";
 import type { StrategyType } from "@/store/features/property/types/calculation";
 import { Building2, RefreshCw, TrendingUp } from "lucide-react";
 import type { FC } from "react";
-import CardContainer from "./common/CardContainer";
-import MiniSpinner from "./common/custom/MiniSpinner";
+import CardContainer from "../common/CardContainer";
+import MiniSpinner from "../common/custom/MiniSpinner";
 interface MiniCardProps {
   activeTab: StrategyType;
   isCalculating: boolean;

@@ -13,10 +13,10 @@ import type {
 import { X } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import ButtonWithLoading from "./common/button/ButtonWithLoading";
-import CommonButton from "./common/button/CommonButton";
-import CardContainer from "./common/CardContainer";
-import CommonHeader from "./common/header/CommonHeader";
+import ButtonWithLoading from "../common/button/ButtonWithLoading";
+import CommonButton from "../common/button/CommonButton";
+import CardContainer from "../common/CardContainer";
+import CommonHeader from "../common/header/CommonHeader";
 
 interface SaveDealModalProps {
   response:
