@@ -27,7 +27,7 @@ type UnitType =
   | "threeBedroom"
   | "fourBedroom";
 
-const UNIT_LABELS: Record<UnitType, string> = {
+export const UNIT_LABELS: Record<UnitType, string> = {
   studio: "Studio",
   oneBedroom: "1 BR",
   twoBedroom: "2 BR",
@@ -35,7 +35,7 @@ const UNIT_LABELS: Record<UnitType, string> = {
   fourBedroom: "4 BR",
 };
 
-const UNIT_KEYS: UnitType[] = [
+export const UNIT_KEYS: UnitType[] = [
   "studio",
   "oneBedroom",
   "twoBedroom",

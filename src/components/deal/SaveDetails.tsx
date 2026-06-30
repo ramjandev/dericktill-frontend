@@ -10,10 +10,13 @@ import type {
   DealStatus,
   PropertyData,
   ScoreStatus,
+  Section8PropertyData,
 } from "@/store/features/property/types/calculation";
 import { formatDateTime } from "@/utils/calculations";
 import { Calendar } from "lucide-react";
 import { IoIosArrowBack } from "react-icons/io";
+import FMRCard from "../maps/FMRCard";
+import { UNIT_KEYS, UNIT_LABELS } from "../reuseAble/HUDPropertyDashboard";
 import type { Scoreboard } from "./DealResultsPanel";
 import DealScorecard from "./DealScorecard";
 import StatusBoardDeal from "./StatusBoardDeal";
@@ -85,6 +88,22 @@ const SaveDetails: React.FC<SaveDetailsProps> = ({
       : scoreboard.rating === "AVERAGE DEAL"
         ? "text-yellow-600"
         : "text-red-600";
+
+  const section8 = selectedDeal as Section8PropertyData;
+
+  const fmrStudio = section8?.fmrStudio ?? 0;
+  const fmrOneBed = section8?.fmrOneBed ?? 0;
+  const fmrTwoBed = section8?.fmrTwoBed ?? 0;
+  const fmrThreeBed = section8?.fmrThreeBed ?? 0;
+  const fmrFourBed = section8?.fmrFourBed ?? 0;
+
+  const fmrByKey: Record<(typeof UNIT_KEYS)[number], number> = {
+    studio: fmrStudio,
+    oneBedroom: fmrOneBed,
+    twoBedroom: fmrTwoBed,
+    threeBedroom: fmrThreeBed,
+    fourBedroom: fmrFourBed,
+  };
   return (
     <div>
       <CommonContainer>
@@ -291,6 +310,19 @@ const SaveDetails: React.FC<SaveDetailsProps> = ({
           </div>
 
           <div className="flex-1 space-y-6">
+            {selectedDeal.strategy === "SECTION_8" && (
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 mt-3">
+                {UNIT_KEYS.map((key) => (
+                  <FMRCard
+                    key={key}
+                    label={UNIT_LABELS[key]}
+                    value={fmrByKey[key] ?? 0}
+                    msaValue={0}
+                    highlight={key === "twoBedroom"}
+                  />
+                ))}
+              </div>
+            )}
             <CrimeScoreCard score={selectedDeal?.crimeScore} />
             <KeyMetricsCard
               monthlyCashFlow={monthlyCashFlow}
@@ -301,7 +333,6 @@ const SaveDetails: React.FC<SaveDetailsProps> = ({
               dscr={selectedDeal.dscr}
               noi={noi}
             />
-
             <IncomeExpensesCard
               monthlyRent={monthlyRent}
               annualRent={annualRent}
@@ -309,7 +340,6 @@ const SaveDetails: React.FC<SaveDetailsProps> = ({
               totalExpenses={totalExpenses}
               netCashFlow={annualNetCashFlow}
             />
-
             {selectedDeal.strategy === "BRRRR" && (
               <BrrrCoreMetricsCard
                 allInCost={parseFloat(selectedDeal.allInCost ?? "0")}
@@ -324,14 +354,12 @@ const SaveDetails: React.FC<SaveDetailsProps> = ({
                 equityCaptured={parseFloat(selectedDeal.equityCaptured ?? "0")}
               />
             )}
-
             <FinancingMortgagesCard
               purchaseLoanAmount={purchaseLoanAmount}
               loanPointsCost={loanPointsCost}
               monthlyMortgage={monthlyMortgage}
               annualMortgage={annualMortgage}
             />
-
             <DealScorecard results={scoreboard} />
           </div>
         </div>

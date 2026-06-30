@@ -126,6 +126,64 @@ export interface TurnkeyCalculationResponse {
   path: string;
 }
 
+interface Section8ResponseData {
+  KeyMetrics: {
+    DSCR: number;
+    netOperatingIncome: number;
+    monthlyCashFlow: number;
+    annualCashFlow: number;
+    capRate: number;
+    CashOnCashReturn: number;
+    OnePercentRule: boolean;
+
+    section8Rent: number;
+    hudFmrRent: number;
+    hudCap: number;
+
+    stabilityFactor: number;
+    complianceCost: number;
+
+    loanAmount: number;
+    monthlyMortgage: number;
+    annualDebtService: number;
+  };
+
+  incomeExpance: {
+    income: {
+      section8Rent: number;
+      annualIncome: number;
+      effectiveIncome: number;
+    };
+
+    expenses: {
+      totalExpenses: number;
+      complianceCost: number;
+    };
+
+    noi: number;
+
+    mortgage: {
+      monthlyMortgage: number;
+      annualDebtService: number;
+    };
+
+    netCashFlow: {
+      monthly: number;
+      annual: number;
+    };
+  };
+
+  dealScoreboard: {
+    totalScore: number;
+    rating: DealStatus;
+    breakdown: {
+      name: string;
+      value: number | boolean;
+      score: number;
+      status: ScoreStatus;
+    }[];
+  };
+}
 export interface Section8DSCRResponse {
   data: {
     strategy: StrategyType;
@@ -139,64 +197,7 @@ export interface Section8DSCRResponse {
     managementRate: number;
     capexRate: number;
 
-    responseData: {
-      KeyMetrics: {
-        DSCR: number;
-        netOperatingIncome: number;
-        monthlyCashFlow: number;
-        annualCashFlow: number;
-        capRate: number;
-        CashOnCashReturn: number;
-        OnePercentRule: boolean;
-
-        section8Rent: number;
-        hudFmrRent: number;
-        hudCap: number;
-
-        stabilityFactor: number;
-        complianceCost: number;
-
-        loanAmount: number;
-        monthlyMortgage: number;
-        annualDebtService: number;
-      };
-
-      incomeExpance: {
-        income: {
-          section8Rent: number;
-          annualIncome: number;
-          effectiveIncome: number;
-        };
-
-        expenses: {
-          totalExpenses: number;
-          complianceCost: number;
-        };
-
-        noi: number;
-
-        mortgage: {
-          monthlyMortgage: number;
-          annualDebtService: number;
-        };
-
-        netCashFlow: {
-          monthly: number;
-          annual: number;
-        };
-      };
-
-      dealScoreboard: {
-        totalScore: number;
-        rating: DealStatus;
-        breakdown: {
-          name: string;
-          value: number | boolean;
-          score: number;
-          status: ScoreStatus;
-        }[];
-      };
-    };
+    responseData: Section8ResponseData;
   };
 
   statusCode: number;
@@ -322,26 +323,15 @@ export type SaveSection8 = {
   vacancyRate: number;
   maintenanceRate: number;
   managementRate: number;
-  crimeScore: number;
   capexRate: number;
-  responseData: {
-    KeyMetrics: {
-      DSCR: number;
-      netOperatingIncome: number;
-      monthlyCashFlow: number;
-      section8Rent: number;
-      hudCap: number;
-      stabilityFactor: number;
-    };
-    dealScoreboard: {
-      totalScore: number;
-      rating: DealStatus;
-      breakdown: {
-        name: string;
-        value: number;
-        score: number;
-        status: ScoreStatus;
-      }[];
-    };
-  };
+  crimeScore: number;
+  latitude: number;
+  longitude: number;
+  fmrStudio: number;
+  fmrOneBed: number;
+  fmrTwoBed: number;
+  fmrThreeBed: number;
+  fmrFourBed: number;
+
+  responseData: Section8ResponseData;
 };

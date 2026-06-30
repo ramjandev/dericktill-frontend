@@ -5,6 +5,7 @@ import {
 } from "@/store/features/property/propertyApi";
 import type { StrategyType } from "@/store/features/property/types/calculation";
 import type { PropertyEnrichResponse } from "@/store/features/property/types/enrich";
+import type { HudResponse } from "@/store/features/property/types/hud";
 import type {
   BrrrrCalculationResponse,
   Section8DSCRResponse,
@@ -27,6 +28,7 @@ interface SaveDealModalProps {
   onClose: () => void;
 
   showCrimeData: PropertyEnrichResponse | null;
+  hudData: HudResponse | null;
 }
 
 export const inputClass = {
@@ -42,6 +44,7 @@ const SaveDealModal: React.FC<SaveDealModalProps> = ({
   onClose,
   activeTab,
   showCrimeData,
+  hudData,
 }) => {
   const [savePropertyBrrrr, { isLoading: isLoadingBrrrr }] =
     useSavePropertyBrrrrMutation();
@@ -140,21 +143,14 @@ const SaveDealModal: React.FC<SaveDealModalProps> = ({
           crimeScore: showCrimeData?.data.crime?.crimeScore ?? 0,
           managementRate: data.managementRate,
           capexRate: data.capexRate,
-          responseData: {
-            ...data.responseData,
-            dealScoreboard: {
-              ...data.responseData.dealScoreboard,
-              breakdown: data.responseData.dealScoreboard.breakdown.map(
-                (item) => ({
-                  ...item,
-                  value:
-                    typeof item.value === "boolean"
-                      ? Number(item.value)
-                      : item.value,
-                }),
-              ),
-            },
-          },
+          latitude: hudData?.data?.geocode.latitude ?? 0,
+          longitude: hudData?.data?.geocode.longitude ?? 0,
+          fmrStudio: hudData?.data?.fmr.studio ?? 0,
+          fmrOneBed: hudData?.data?.fmr.oneBedroom ?? 0,
+          fmrTwoBed: hudData?.data?.fmr.twoBedroom ?? 0,
+          fmrThreeBed: hudData?.data?.fmr.threeBedroom ?? 0,
+          fmrFourBed: hudData?.data?.fmr.fourBedroom ?? 0,
+          responseData: data.responseData,
         }).unwrap();
       }
 

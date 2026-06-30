@@ -200,6 +200,13 @@ export interface Section8PropertyData extends BasePropertyResponse {
   scoreBoardStatus: DealStatus;
   refinanceLoanAmount: null;
   crimeScore: number;
+  latitude: number;
+  longitude: number;
+  fmrStudio: number;
+  fmrOneBed: number;
+  fmrTwoBed: number;
+  fmrThreeBed: number;
+  fmrFourBed: number;
 }
 
 export interface Section8DSCRResponse {
