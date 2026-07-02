@@ -41,7 +41,7 @@ export const contentAPI = baseAPI.injectEndpoints({
     }),
     calculateSection8: build.mutation<Section8DSCRResponse, PropertySection8>({
       query: (data) => ({
-        url: `/property/calculate-Section8_DSCR`,
+        url: `/property/calculate-section8`,
         method: "POST",
         body: data,
       }),

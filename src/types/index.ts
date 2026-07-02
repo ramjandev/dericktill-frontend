@@ -10,6 +10,7 @@ export interface DealInputs {
   arv: number;
   monthlyRent: number;
   rehabCost: number;
+  rehabDurationMonths: number;
   propertyTax: number;
   insurance: number;
   utilities: number;

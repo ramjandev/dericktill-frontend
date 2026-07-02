@@ -94,7 +94,7 @@ const DEFAULT_INPUTS: DealInputs = {
   arv: 200000,
   monthlyRent: 1500,
   rehabCost: 10000,
-
+  rehabDurationMonths: 6,
   propertyTax: 200,
   insurance: 100,
   utilities: 150,
@@ -170,6 +170,7 @@ const Analyze = () => {
     arvAfterRepairValue: data.arv ?? 0,
     monthlyRent: data.monthlyRent,
     rehabCost: data.rehabCost ?? 0,
+    rehabDurationMonths: data.rehabDurationMonths ?? 0,
     annualPropertyTax: data.propertyTax ?? 0,
     annualInsurance: data.insurance ?? 0,
     annualUtilities: data.utilities ?? 0,
@@ -188,6 +189,7 @@ const Analyze = () => {
     refinanceCost: data.refinanceCost ?? 0,
     holdingCost: data.holdingCost,
     loanPoints: data.loanPoints ?? 0,
+    crimeScore: showCrimeData?.data.crime?.crimeScore ?? 0,
   });
 
   const buildTurnkeyPayload = (data: DealInputsSchema): PropertyTurnkey => ({
@@ -216,9 +218,8 @@ const Analyze = () => {
     lenderFees: data.lenderFees,
     closingCost: data.closingCost,
     holdingCost: data.holdingCost,
-    marketRent: data.marketRent,
     section8Rent: data.section8Rent,
-    crimeScore: data.crimeScore,
+    crimeScore: showCrimeData?.data.crime?.crimeScore ?? 0,
   });
 
   const buildSection8Payload = (data: DealInputsSchema): PropertySection8 => ({
@@ -248,6 +249,7 @@ const Analyze = () => {
     closingCost: data.closingCost,
     refinanceCost: data.refinanceCost ?? 0,
     holdingCost: data.holdingCost,
+    crimeScore: showCrimeData?.data.crime?.crimeScore ?? 0,
   });
 
   const handleCalculate: SubmitHandler<DealInputsSchema> = async (data) => {

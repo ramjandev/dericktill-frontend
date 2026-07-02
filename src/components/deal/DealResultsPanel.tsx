@@ -90,7 +90,7 @@ function normalizeResponse(
 
     return {
       monthlyCashFlow: d?.monthlyCashFlow_m ?? 0,
-      annualROI: d?.incomeExpance?.netCashFlow?.annual ?? 0,
+      annualROI: d?.postRefiCoC_m ?? 0,
       cocReturn: d?.postRefiCoC_m ?? 0,
       capRate: d?.capRate_m ?? 0,
       dscr: d?.DSCR_m ?? 0,
@@ -104,7 +104,29 @@ function normalizeResponse(
       totalExpenses: ie?.expenses?.totalExpenses ?? 0,
       dealRating: d?.dealScoreboard?.rating ?? "",
 
-      incomeExpance: ie,
+      incomeExpance: {
+        income: {
+          monthlyRent: ie?.income?.monthlyRent ?? 0,
+          annualRent: ie?.income?.annualRent ?? 0,
+          effectiveIncome: ie?.income?.effectiveIncome ?? 0,
+        },
+        expenses: {
+          totalExpenses: ie?.expenses?.totalExpenses ?? 0,
+        },
+        netCashFlow: {
+          monthly: ie?.netCashFlow?.monthly ?? 0,
+          annual: ie?.netCashFlow?.annual ?? 0,
+        },
+        mortgage: {
+          monthlyMortgage: ie?.mortgage?.monthlyMortgage ?? 0,
+          annualMortgage: ie?.mortgage?.annualMortgage ?? 0,
+        },
+        financing: {
+          purchaseLoanAmount: ie?.financing?.purchaseLoanAmount ?? 0,
+          refinanceLoanAmount: ie?.financing?.refinanceLoanAmount ?? 0,
+          loanPointsCost: ie?.financing?.loanPointsCost ?? 0,
+        },
+      },
 
       allInCost: d?.allInCost_m ?? 0,
       initialCashInvested: d?.initialCashInvested_m ?? 0,
@@ -143,18 +165,18 @@ function normalizeResponse(
       capex: d.capexRate,
       propertyMgmt: d.managementRate,
 
-      totalExpenses: ie?.noi ? 0 : 0, // or remove if not available
+      totalExpenses: ie?.expenses?.totalExpenses ?? 0,
 
       dealRating: d.responseData.dealScoreboard?.rating ?? "",
 
       incomeExpance: {
         income: {
-          monthlyRent: 0,
-          annualRent: 0,
-          effectiveIncome: 0,
+          monthlyRent: ie?.income?.monthlyRent ?? 0,
+          annualRent: ie?.income?.annualRent ?? 0,
+          effectiveIncome: ie?.income?.effectiveIncome ?? 0,
         },
         expenses: {
-          totalExpenses: 0,
+          totalExpenses: ie?.expenses?.totalExpenses ?? 0,
         },
         netCashFlow: {
           monthly: ie?.netCashFlow?.monthly ?? 0,
@@ -165,9 +187,11 @@ function normalizeResponse(
           annualMortgage: ie?.mortgage?.annualMortgage ?? 0,
         },
         financing: {
-          purchaseLoanAmount: km.loanAmount ?? 0,
+          purchaseLoanAmount:
+            ie?.financing?.purchaseLoanAmount ?? km.loanAmount ?? 0,
           refinanceLoanAmount: 0,
-          loanPointsCost: km.loanPointsCost ?? 0,
+          loanPointsCost:
+            ie?.financing?.loanPointsCost ?? km.loanPointsCost ?? 0,
         },
       },
       dealScoreboard: d.responseData.dealScoreboard
@@ -181,7 +205,6 @@ function normalizeResponse(
   }
 
   // SECTION_8
-
   const d = (response as Section8DSCRResponse).data;
   const km = d?.responseData?.KeyMetrics;
   const ie = d?.responseData?.incomeExpance;
@@ -209,29 +232,26 @@ function normalizeResponse(
 
     incomeExpance: {
       income: {
-        monthlyRent: ie?.income?.section8Rent ?? 0,
-        annualRent: ie?.income?.annualIncome ?? 0,
+        monthlyRent: ie?.income?.monthlyRent ?? 0,
+        annualRent: ie?.income?.annualRent ?? 0,
         effectiveIncome: ie?.income?.effectiveIncome ?? 0,
       },
-
       expenses: {
         totalExpenses: ie?.expenses?.totalExpenses ?? 0,
       },
-
       netCashFlow: {
         monthly: ie?.netCashFlow?.monthly ?? 0,
         annual: ie?.netCashFlow?.annual ?? 0,
       },
-
       mortgage: {
         monthlyMortgage: ie?.mortgage?.monthlyMortgage ?? 0,
-        annualMortgage: ie?.mortgage?.annualDebtService ?? 0,
+        annualMortgage: ie?.mortgage?.annualMortgage ?? 0,
       },
-
       financing: {
-        purchaseLoanAmount: km?.loanAmount ?? 0,
+        purchaseLoanAmount:
+          ie?.financing?.purchaseLoanAmount ?? km?.loanAmount ?? 0,
         refinanceLoanAmount: 0,
-        loanPointsCost: 0,
+        loanPointsCost: ie?.financing?.loanPointsCost ?? 0,
       },
     },
     dealScoreboard: d.responseData.dealScoreboard
@@ -271,16 +291,16 @@ const DealResultsPanel: React.FC<DealResultsPanelProps> = ({
           noi={results.noi}
         />
         <IncomeExpensesCard
-          monthlyRent={results.incomeExpance?.income?.monthlyRent ?? 0}
-          annualRent={results.incomeExpance?.income?.annualRent ?? 0}
-          effectiveIncome={results.incomeExpance?.income?.effectiveIncome ?? 0}
+          monthlyRent={results?.incomeExpance?.income?.monthlyRent ?? 0}
+          annualRent={results?.incomeExpance?.income?.annualRent ?? 0}
+          effectiveIncome={results?.incomeExpance?.income?.effectiveIncome ?? 0}
           totalExpenses={
-            results.incomeExpance?.expenses?.totalExpenses ??
-            results.totalExpenses
+            results?.incomeExpance?.expenses?.totalExpenses ??
+            results?.totalExpenses
           }
           netCashFlow={
-            results.incomeExpance?.netCashFlow?.annual ??
-            results.monthlyCashFlow
+            results?.incomeExpance?.netCashFlow?.annual ??
+            results?.monthlyCashFlow
           }
         />
 
@@ -305,6 +325,7 @@ const DealResultsPanel: React.FC<DealResultsPanelProps> = ({
             results.mortgagePayment
           }
           annualMortgage={results.incomeExpance?.mortgage?.annualMortgage ?? 0}
+          activeTab={activeTab}
         />
         {results?.dealScoreboard && (
           <DealScorecard results={results?.dealScoreboard} />

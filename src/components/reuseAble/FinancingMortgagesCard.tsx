@@ -1,5 +1,6 @@
 // components/FinancingMortgagesCard.tsx
 
+import type { StrategyType } from "@/store/features/property/types/calculation";
 import { formatCurrencyDecimal } from "@/utils/calculations";
 import CardContainer from "../common/CardContainer";
 import CommonHeader from "../common/header/CommonHeader";
@@ -9,6 +10,7 @@ interface FinancingMortgagesCardProps {
   loanPointsCost: number;
   monthlyMortgage: number;
   annualMortgage: number;
+  activeTab: StrategyType;
 }
 
 const FinancingMortgagesCard: React.FC<FinancingMortgagesCardProps> = ({
@@ -16,7 +18,10 @@ const FinancingMortgagesCard: React.FC<FinancingMortgagesCardProps> = ({
   loanPointsCost,
   monthlyMortgage,
   annualMortgage,
+  activeTab,
 }) => {
+  const mortgageLabel =
+    activeTab === "BRRRR" ? "Refinance Mortgage" : "Purchase Mortgage";
   return (
     <CardContainer>
       <CommonHeader size="lg" className="pb-4">
@@ -39,12 +44,17 @@ const FinancingMortgagesCard: React.FC<FinancingMortgagesCardProps> = ({
             </CommonHeader>
           </div>
 
-          <div className="flex justify-between border-b-[1.173px] pb-2 border-[#F3F4F6]">
-            <CommonHeader size="sm">Loan Points Cost</CommonHeader>
-            <CommonHeader size="md" className="text-[#101828]! font-semibold!">
-              {formatCurrencyDecimal(loanPointsCost)}
-            </CommonHeader>
-          </div>
+          {loanPointsCost > 0 && (
+            <div className="flex justify-between border-b-[1.173px] pb-2 border-[#F3F4F6]">
+              <CommonHeader size="sm">Loan Points Cost</CommonHeader>
+              <CommonHeader
+                size="md"
+                className="text-[#101828]! font-semibold!"
+              >
+                {formatCurrencyDecimal(loanPointsCost)}
+              </CommonHeader>
+            </div>
+          )}
         </CardContainer>
 
         <CardContainer
@@ -52,7 +62,7 @@ const FinancingMortgagesCard: React.FC<FinancingMortgagesCardProps> = ({
           className="rounded-[10px]! border-[1.173px] border-[#B9F8CF]! bg-[#F0FDF4]! space-y-3"
         >
           <CommonHeader size="lg" className="text-[#008236]!">
-            Refinance Mortgage
+            {mortgageLabel}
           </CommonHeader>
 
           <div className="flex justify-between text-sm border-b-[1.173px] pb-2 border-[#F3F4F6]">

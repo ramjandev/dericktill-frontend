@@ -112,6 +112,7 @@ const SaveDealModal: React.FC<SaveDealModalProps> = ({
           maintenanceRate: data.maintenanceRate,
           managementRate: data.managementRate,
           capexRate: data.capexRate,
+          crimeScore: showCrimeData?.data.crime?.crimeScore ?? 0,
           responseData: {
             ...data.responseData,
             dealScoreboard: {

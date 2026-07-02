@@ -69,7 +69,7 @@ export interface BrrrrCalculationResponse {
 
 export interface TurnkeyCalculationResponse {
   data: {
-    strategy: StrategyType;
+    strategy: "TURNKEY";
     stateAddress: string;
     purchasePrice: number;
     downPayment: number;
@@ -97,6 +97,14 @@ export interface TurnkeyCalculationResponse {
       };
 
       incomeExpance: {
+        income: {
+          monthlyRent: number;
+          annualRent: number;
+          effectiveIncome: number;
+        };
+        expenses: {
+          totalExpenses: number;
+        };
         noi: number;
         mortgage: {
           monthlyMortgage: number;
@@ -106,6 +114,11 @@ export interface TurnkeyCalculationResponse {
           monthly: number;
           annual: number;
         };
+        financing: {
+          purchaseLoanAmount: number;
+          loanPointsCost: number;
+          lenderFees: number;
+        };
       };
 
       dealScoreboard: {
@@ -113,7 +126,7 @@ export interface TurnkeyCalculationResponse {
         rating: DealStatus;
         breakdown: {
           name: string;
-          value: number | boolean; // <-- FIX: supports One Percent Rule false/true
+          value: number | boolean;
           score: number;
           status: ScoreStatus;
         }[];
@@ -150,8 +163,8 @@ interface Section8ResponseData {
 
   incomeExpance: {
     income: {
-      section8Rent: number;
-      annualIncome: number;
+      monthlyRent: number;
+      annualRent: number;
       effectiveIncome: number;
     };
 
@@ -164,12 +177,18 @@ interface Section8ResponseData {
 
     mortgage: {
       monthlyMortgage: number;
-      annualDebtService: number;
+      annualMortgage: number;
     };
 
     netCashFlow: {
       monthly: number;
       annual: number;
+    };
+
+    financing: {
+      purchaseLoanAmount: number;
+      loanPointsCost: number;
+      lenderFees: number;
     };
   };
 
@@ -184,6 +203,7 @@ interface Section8ResponseData {
     }[];
   };
 }
+
 export interface Section8DSCRResponse {
   data: {
     strategy: StrategyType;
@@ -204,7 +224,6 @@ export interface Section8DSCRResponse {
   timestamp: string;
   path: string;
 }
-
 // save property
 
 export type SaveBRRRR = {
@@ -278,6 +297,7 @@ export type SaveTurnkey = {
   maintenanceRate: number;
   managementRate: number;
   capexRate: number;
+  crimeScore: number;
   responseData: {
     KeyMetrics: {
       allInCost: number;

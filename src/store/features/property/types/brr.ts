@@ -10,6 +10,7 @@ export interface PropertyBrrr {
   interestRate: number;
   loanTerm: number;
   rehabCost: number;
+  rehabDurationMonths: number;
   arvAfterRepairValue: number;
   monthlyRent: number;
   annualPropertyTax: number;
@@ -27,6 +28,7 @@ export interface PropertyBrrr {
   refinanceCost: number;
   holdingCost: number;
   loanPoints: number;
+  crimeScore: number;
 }
 
 export interface PropertyTurnkey {
@@ -55,7 +57,6 @@ export interface PropertyTurnkey {
   lenderFees: number;
   closingCost: number;
   holdingCost: number;
-  marketRent: number;
   section8Rent: number;
   crimeScore: number;
 }
@@ -87,6 +88,7 @@ export interface PropertySection8 {
   closingCost: number;
   refinanceCost: number;
   holdingCost: number;
+  crimeScore: number;
 }
 
 export type GetParams = {

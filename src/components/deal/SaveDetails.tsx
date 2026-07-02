@@ -359,6 +359,7 @@ const SaveDetails: React.FC<SaveDetailsProps> = ({
               loanPointsCost={loanPointsCost}
               monthlyMortgage={monthlyMortgage}
               annualMortgage={annualMortgage}
+              activeTab={selectedDeal.strategy}
             />
             <DealScorecard results={scoreboard} />
           </div>

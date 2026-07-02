@@ -49,6 +49,11 @@ const baseSchema = z.object({
     .number({ error: "Rehab cost must be a number" })
     .min(0, "Rehab cost cannot be negative"),
 
+  rehabDurationMonths: z
+    .number({ error: "Rehab duration must be a number" })
+    .int("Rehab duration must be a whole number")
+    .min(0, "Rehab duration cannot be negative")
+    .max(60, "Rehab duration cannot exceed 60 months"),
   propertyTax: z
     .number({ error: "Property tax must be a number" })
     .min(0, "Property tax cannot be negative"),
@@ -221,9 +226,7 @@ export const dealInputSchema = baseSchema
     lenderFees: z
       .number({ error: "Lender fees must be a number" })
       .min(0, "Lender fees cannot be negative"),
-    marketRent: z
-      .number({ error: "Market rent must be a number" })
-      .min(0, "Market rent cannot be negative"),
+
     section8Rent: z
       .number({ error: "Section 8 rent must be a number" })
       .min(0, "Section 8 rent cannot be negative"),

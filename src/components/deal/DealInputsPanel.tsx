@@ -50,6 +50,7 @@ const DealInputsPanel: React.FC<DealInputsPanelProps> = ({
       arv: inputs.arv,
       monthlyRent: inputs.monthlyRent,
       rehabCost: inputs.rehabCost,
+      rehabDurationMonths: inputs.rehabDurationMonths,
       propertyTax: inputs.propertyTax,
       insurance: inputs.insurance,
       utilities: inputs.utilities,
@@ -70,9 +71,7 @@ const DealInputsPanel: React.FC<DealInputsPanelProps> = ({
       loanPoints: inputs.loanPoints,
       // Turnkey-specific
       lenderFees: inputs.lenderFees,
-      marketRent: inputs.marketRent,
       section8Rent: inputs.section8Rent,
-      crimeScore: inputs.crimeScore,
     },
     mode: "onSubmit",
   });
@@ -90,8 +89,14 @@ const DealInputsPanel: React.FC<DealInputsPanelProps> = ({
     setValue(key as keyof DealInputsSchema, parsed as never);
     trigger(key as keyof DealInputsSchema);
 
-    if (key === "downPaymentPercent" && inputs.purchasePrice) {
+    if (key === "downPaymentPercent") {
       const amount = (parsed / 100) * inputs.purchasePrice;
+      onChange("downPayment", amount);
+      setValue("downPayment", amount as never);
+    }
+
+    if (key === "purchasePrice") {
+      const amount = (inputs.downPaymentPercent / 100) * parsed;
       onChange("downPayment", amount);
       setValue("downPayment", amount as never);
     }
@@ -132,6 +137,7 @@ const DealInputsPanel: React.FC<DealInputsPanelProps> = ({
               value={inputs.streetAddress}
               onChange={handleStr("streetAddress")}
               placeholder="123 Main St"
+              isNumeric={false}
             />
             <Err field="streetAddress" />
           </div>
@@ -142,6 +148,7 @@ const DealInputsPanel: React.FC<DealInputsPanelProps> = ({
                 value={inputs.city}
                 onChange={handleStr("city")}
                 placeholder="Springfield"
+                isNumeric={false}
               />
               <Err field="city" />
             </div>
@@ -151,6 +158,7 @@ const DealInputsPanel: React.FC<DealInputsPanelProps> = ({
                 value={inputs.state}
                 onChange={handleStr("state")}
                 placeholder="CA"
+                isNumeric={false}
               />
               <Err field="state" />
             </div>
@@ -227,26 +235,28 @@ const DealInputsPanel: React.FC<DealInputsPanelProps> = ({
               />
               <Err field="bedrooms" />
             </div>
-            <div>
-              <InputField
-                label="Loan Term"
-                value={inputs.loanTerm ?? ""}
-                onChange={handleNum("loanTerm")}
-                suffix="yrs"
-                placeholder="30"
-              />
-              <Err field="loanTerm" />
-            </div>{" "}
-            <div>
-              <InputField
-                label="Loan Points"
-                value={inputs.loanPoints ?? ""}
-                onChange={handleNum("loanPoints")}
-                prefix="$"
-                placeholder="0"
-              />
-              <Err field="loanPoints" />
-            </div>
+          </div>{" "}
+          <div>
+            <InputField
+              label="Loan Term"
+              value={inputs.loanTerm ?? ""}
+              onChange={handleNum("loanTerm")}
+              suffix="yrs"
+              placeholder="30"
+            />
+            <Err field="loanTerm" />
+          </div>
+          <div>
+            <InputField
+              label="Loan Points"
+              value={inputs.loanPoints ?? ""}
+              onChange={handleNum("loanPoints")}
+              suffix="pts"
+              placeholder="1.0"
+              note="1 pt = 1% of loan"
+              isNumeric
+            />
+            <Err field="loanPoints" />
           </div>
           {dealType === "BRRRR" && (
             <div>
@@ -279,6 +289,18 @@ const DealInputsPanel: React.FC<DealInputsPanelProps> = ({
                 placeholder="2000"
               />
               <Err field="monthlyRent" />
+            </div>
+          )}
+          {dealType === "BRRRR" && (
+            <div>
+              <InputField
+                label="Rehab Duration (Months)"
+                value={inputs.rehabDurationMonths ?? ""}
+                onChange={handleNum("rehabDurationMonths")}
+                suffix="months"
+                placeholder="6"
+              />
+              <Err field="rehabDurationMonths" />
             </div>
           )}
           {dealType !== "SECTION_8" && (
@@ -320,18 +342,9 @@ const DealInputsPanel: React.FC<DealInputsPanelProps> = ({
                 />
                 <Err field="lenderFees" />
               </div>
-              <div>
-                <InputField
-                  label="Market Rent"
-                  value={inputs.marketRent ?? ""}
-                  onChange={handleNum("marketRent")}
-                  prefix="$"
-                  placeholder="2100"
-                />
-                <Err field="marketRent" />
-              </div>
             </>
           )}
+
         </div>
       </CardContainer>
       {/* Operating Expenses */}
