@@ -7,8 +7,8 @@ interface CrimeScoreCardProps {
 }
 
 function getRiskLevel(score: number): RiskLevel {
-  if (score <= 40) return "low";
-  if (score <= 70) return "medium";
+  if (score <= 33) return "low";
+  if (score <= 66) return "medium";
   return "high";
 }
 

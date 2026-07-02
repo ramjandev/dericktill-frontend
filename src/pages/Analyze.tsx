@@ -450,7 +450,6 @@ const Analyze = () => {
             response={response}
             activeTab={activeTab}
             onClose={() => setShowSaveModal(false)}
-            showCrimeData={showCrimeData}
             hudData={hudData!!}
           />
         )}

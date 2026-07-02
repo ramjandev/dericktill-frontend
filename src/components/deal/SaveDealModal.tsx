@@ -4,7 +4,6 @@ import {
   useSavePropertyTurnkeyMutation,
 } from "@/store/features/property/propertyApi";
 import type { StrategyType } from "@/store/features/property/types/calculation";
-import type { PropertyEnrichResponse } from "@/store/features/property/types/enrich";
 import type { HudResponse } from "@/store/features/property/types/hud";
 import type {
   BrrrrCalculationResponse,
@@ -27,7 +26,6 @@ interface SaveDealModalProps {
   activeTab: StrategyType;
   onClose: () => void;
 
-  showCrimeData: PropertyEnrichResponse | null;
   hudData: HudResponse | null;
 }
 
@@ -43,7 +41,7 @@ const SaveDealModal: React.FC<SaveDealModalProps> = ({
   response,
   onClose,
   activeTab,
-  showCrimeData,
+
   hudData,
 }) => {
   const [savePropertyBrrrr, { isLoading: isLoadingBrrrr }] =
@@ -64,94 +62,26 @@ const SaveDealModal: React.FC<SaveDealModalProps> = ({
         const { data } = response as BrrrrCalculationResponse;
         await savePropertyBrrrr({
           name,
-          strategy: data.strategy,
-          stateAddress: data.stateAddress,
-          purchasePrice: data.purchasePrice,
-          downPayment: data.downPayment,
-          annualInsurance: data.annualInsurance,
-          annualPropertyTax: data.annualPropertyTax,
-          vacancyRate: data.vacancyRate,
-          maintenanceRate: data.maintenanceRate,
-          managementRate: data.managementRate,
-          crimeScore: showCrimeData?.data.crime?.crimeScore ?? 0,
-          capexRate: data.capexRate,
-          allInCost_m: data.allInCost_m,
-          initialCashInvested_m: data.initialCashInvested_m,
-          monthlyCashFlow_m: data.monthlyCashFlow_m,
-          postRefiCoC_m: data.postRefiCoC_m,
-          cashOutAmount_m: data.cashOutAmount_m,
-          cashLeftInDeal_m: data.cashLeftInDeal_m,
-          equityCaptured_m: data.equityCaptured_m,
-          refinanceLoanAmount_m: data.refinanceLoanAmount_m,
-          capRate_m: data.capRate_m,
-          DSCR_m: data.DSCR_m,
-          netOperatingIncome_m: data.netOperatingIncome_m,
-          incomeExpance: data.incomeExpance,
-          dealScoreboard: {
-            ...data.dealScoreboard,
-            breakdown: data.dealScoreboard.breakdown.map((item) => ({
-              ...item,
-              value:
-                typeof item.value === "boolean"
-                  ? Number(item.value)
-                  : item.value,
-            })),
-          },
+          ...data,
         }).unwrap();
       } else if (activeTab === "TURNKEY") {
         const { data } = response as TurnkeyCalculationResponse;
         await savePropertyTurnkey({
           name,
-          strategy: data.strategy,
-          stateAddress: data.stateAddress,
-          purchasePrice: data.purchasePrice,
-          downPayment: data.downPayment,
-          annualInsurance: data.annualInsurance,
-          annualPropertyTax: data.annualPropertyTax,
-          vacancyRate: data.vacancyRate,
-          maintenanceRate: data.maintenanceRate,
-          managementRate: data.managementRate,
-          capexRate: data.capexRate,
-          crimeScore: showCrimeData?.data.crime?.crimeScore ?? 0,
-          responseData: {
-            ...data.responseData,
-            dealScoreboard: {
-              ...data.responseData.dealScoreboard,
-              breakdown: data.responseData.dealScoreboard.breakdown.map(
-                (item) => ({
-                  ...item,
-                  value:
-                    typeof item.value === "boolean"
-                      ? Number(item.value)
-                      : item.value,
-                }),
-              ),
-            },
-          },
+          ...data,
         }).unwrap();
       } else {
         const { data } = response as Section8DSCRResponse;
         await savePropertySection8({
           name,
-          strategy: data.strategy,
-          stateAddress: data.stateAddress,
-          purchasePrice: data.purchasePrice,
-          downPayment: data.downPayment,
-          annualInsurance: data.annualInsurance,
-          annualPropertyTax: data.annualPropertyTax,
-          vacancyRate: data.vacancyRate,
-          maintenanceRate: data.maintenanceRate,
-          crimeScore: showCrimeData?.data.crime?.crimeScore ?? 0,
-          managementRate: data.managementRate,
-          capexRate: data.capexRate,
-          latitude: hudData?.data?.geocode.latitude ?? 0,
-          longitude: hudData?.data?.geocode.longitude ?? 0,
-          fmrStudio: hudData?.data?.fmr.studio ?? 0,
-          fmrOneBed: hudData?.data?.fmr.oneBedroom ?? 0,
-          fmrTwoBed: hudData?.data?.fmr.twoBedroom ?? 0,
-          fmrThreeBed: hudData?.data?.fmr.threeBedroom ?? 0,
-          fmrFourBed: hudData?.data?.fmr.fourBedroom ?? 0,
-          responseData: data.responseData,
+          ...data,
+          studio: hudData?.data?.fmr?.studio || 0,
+          oneBedroom: hudData?.data?.fmr?.oneBedroom || 0,
+          twoBedroom: hudData?.data?.fmr?.twoBedroom || 0,
+          threeBedroom: hudData?.data?.fmr?.threeBedroom || 0,
+          fourBedroom: hudData?.data?.fmr?.fourBedroom || 0,
+          latitude: hudData?.data?.geocode?.latitude || 0,
+          longitude: hudData?.data?.geocode?.longitude || 0,
         }).unwrap();
       }
 

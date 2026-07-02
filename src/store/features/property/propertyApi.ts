@@ -13,9 +13,9 @@ import type { AddressRequest, PropertyEnrichResponse } from "./types/enrich";
 import type { HudResponse } from "./types/hud";
 import type {
   BrrrrCalculationResponse,
-  SaveBRRRR,
-  SaveSection8,
-  SaveTurnkey,
+  SaveBRRRRPayload,
+  SaveSection8Payload,
+  SaveTurnkeyPayload,
   Section8DSCRResponse,
   TurnkeyCalculationResponse,
 } from "./types/output";
@@ -48,26 +48,29 @@ export const contentAPI = baseAPI.injectEndpoints({
     }),
 
     // save
-    savePropertyBrrrr: build.mutation<void, SaveBRRRR>({
+    savePropertyBrrrr: build.mutation<void, SaveBRRRRPayload>({
       query: (data) => ({
         url: `/property/save-brrr-property`,
         method: "POST",
         body: data,
       }),
+      invalidatesTags: ["Calculations"],
     }),
-    savePropertyTurnkey: build.mutation<void, SaveTurnkey>({
+    savePropertyTurnkey: build.mutation<void, SaveTurnkeyPayload>({
       query: (data) => ({
         url: `/property/save-turnkey-property`,
         method: "POST",
         body: data,
       }),
+      invalidatesTags: ["Calculations"],
     }),
-    savePropertySection8: build.mutation<void, SaveSection8>({
+    savePropertySection8: build.mutation<void, SaveSection8Payload>({
       query: (data) => ({
         url: `/property/save-section8-property`,
         method: "POST",
         body: data,
       }),
+      invalidatesTags: ["Calculations"],
     }),
     getCalculation: build.query<PropertyCalculations, GetParams>({
       query: (params) => ({
