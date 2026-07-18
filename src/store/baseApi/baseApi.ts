@@ -7,7 +7,7 @@ import { logout } from "../features/auth/auth.slice";
 
 // Original baseQueryAPI
 const baseQueryAPI = fetchBaseQuery({
-  baseUrl: import.meta.env.VITE_API_URL,
+  baseUrl: import.meta.env.VITE_API_URL || "https://api.feasiblerealestate.com",
   credentials: "include",
   prepareHeaders(headers) {
     const accessToken = Cookies.get("accessToken");
