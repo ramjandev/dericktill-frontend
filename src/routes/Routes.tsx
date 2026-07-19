@@ -1,9 +1,11 @@
 import Analyze from "@/pages/Analyze";
+import AccessDenied from "@/pages/AccessDenied";
 import Home from "@/pages/Home";
 import Login from "@/pages/Login";
 import NotFound from "@/pages/NotFound";
 import Register from "@/pages/Register";
 import SavedDealsPage from "@/pages/SavedDealsPage";
+import WhopCallback from "@/pages/auth/WhopCallback";
 import ChangePassword from "@/pages/auth/ChangePassword";
 import ForgotPassword from "@/pages/auth/ForgotPassword";
 import ResetPassword from "@/pages/auth/ResetPassword";
@@ -39,6 +41,8 @@ const routes = createBrowserRouter([
 
       { path: "register", element: <Register /> },
       { path: "login", element: <Login /> },
+      { path: "auth/whop/callback", element: <WhopCallback /> },
+      { path: "access-denied", element: <AccessDenied /> },
 
       { path: "forgot-password", element: <ForgotPassword /> },
       { path: "verify-otp", element: <VerifyOtp /> },

@@ -2,12 +2,19 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import Cookies from "js-cookie";
 
+import { API_ROOT_URL } from "@/config/runtime";
 import { toast } from "react-toastify";
 import { logout } from "../features/auth/auth.slice";
 
+const isAuthEndpoint = (url?: string) =>
+  typeof url === "string" &&
+  ["/auth/whop", "/auth/whop/exchange", "/auth/me", "/auth/logout"].some(
+    (path) => url.includes(path),
+  );
+
 // Original baseQueryAPI
 const baseQueryAPI = fetchBaseQuery({
-  baseUrl: import.meta.env.VITE_API_URL || "https://api.feasiblerealestate.com",
+  baseUrl: API_ROOT_URL,
   credentials: "include",
   prepareHeaders(headers) {
     const accessToken = Cookies.get("accessToken");
@@ -25,6 +32,8 @@ const baseQueryWithToasts: typeof baseQueryAPI = async (
   extraOptions: any,
 ) => {
   const result = await baseQueryAPI(args, api, extraOptions);
+  const requestUrl =
+    typeof args === "string" ? args : typeof args === "object" ? args.url : "";
 
   const method =
     typeof args === "object" && "method" in args ? args.method : "GET";
@@ -33,7 +42,9 @@ const baseQueryWithToasts: typeof baseQueryAPI = async (
   if (result?.error && result.error.status === 401) {
     Cookies.remove("accessToken");
     api.dispatch(logout());
-    toast.error("Session expired. Please login again.");
+    if (!isAuthEndpoint(requestUrl)) {
+      toast.error("Session expired. Please login again.");
+    }
   }
 
   if (method !== "GET") {
@@ -57,7 +68,9 @@ const baseQueryWithToasts: typeof baseQueryAPI = async (
       const message =
         (result.error.data as { message?: string })?.message ||
         "Something went wrong. Please try again.";
-      toast.error(message);
+      if (!isAuthEndpoint(requestUrl)) {
+        toast.error(message);
+      }
     }
   }
 

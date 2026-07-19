@@ -12,6 +12,8 @@ import {
   selectAccessToken,
   selectUser,
 } from "@/store/features/auth/auth.slice";
+import { useLogoutSessionMutation } from "@/store/features/auth/auth.api";
+import Cookies from "js-cookie";
 import { Home, KeyRound, LogIn, LogOut, UserCircle2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { LuSave } from "react-icons/lu";
@@ -31,6 +33,7 @@ const Navbar = () => {
   const user = useSelector(selectUser);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [logoutSession] = useLogoutSessionMutation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -41,9 +44,16 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleLogout = () => {
-    dispatch(logout());
-    navigate("/login");
+  const handleLogout = async () => {
+    try {
+      await logoutSession().unwrap();
+    } catch {
+      // Clear the frontend state even if the backend token is already expired.
+    } finally {
+      Cookies.remove("accessToken");
+      dispatch(logout());
+      navigate("/login", { replace: true });
+    }
   };
 
   const getInitials = (name?: string | null) => {

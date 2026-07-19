@@ -15,6 +15,28 @@ export const userAPI = baseAPI.injectEndpoints({
         body: data,
       }),
     }),
+    whopExchange: build.mutation<unknown, { code: string }>({
+      query: ({ code }) => ({
+        url: "/auth/whop/exchange",
+        method: "POST",
+        body: { code },
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }),
+    }),
+    currentUser: build.query<unknown, void>({
+      query: () => ({
+        url: "/auth/me",
+        method: "GET",
+      }),
+    }),
+    logoutSession: build.mutation<unknown, void>({
+      query: () => ({
+        url: "/auth/logout",
+        method: "POST",
+      }),
+    }),
     registerUser: build.mutation<void, RegisterUser>({
       query: (data) => ({
         url: "/auth/user-singup",
@@ -71,6 +93,10 @@ export const userAPI = baseAPI.injectEndpoints({
 
 export const {
   useLoginMutation,
+  useWhopExchangeMutation,
+  useCurrentUserQuery,
+  useLazyCurrentUserQuery,
+  useLogoutSessionMutation,
   useRegisterUserMutation,
   useForgotPasswordMutation,
   useResendOtpMutation,

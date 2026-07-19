@@ -13,8 +13,10 @@ export type LoginUser = {
 // login user
 interface Tokens {
   accessToken: string;
-  refreshToken: string;
+  refreshToken?: string;
 }
+
+export type SubscriptionInfo = Record<string, unknown> | string;
 
 export interface User {
   userId: string;
@@ -30,20 +32,40 @@ export interface User {
   updatedAt: string;
 }
 
-interface AuthResult {
-  message: string;
-  tokens: Tokens;
+export interface AuthSession {
+  accessToken: string;
+  refreshToken?: string | null;
   user: User;
+  role?: string | null;
+  subscription?: SubscriptionInfo | null;
+}
+
+interface AuthResult {
+  message?: string;
+  tokens?: Tokens;
+  user?: User;
+  accessToken?: string;
+  refreshToken?: string;
+  role?: string;
+  subscription?: SubscriptionInfo;
 }
 
 export interface LoginResponse {
-  data: {
-    success: boolean;
-    result: AuthResult;
+  data?: {
+    success?: boolean;
+    message?: string;
+    result?: AuthResult;
+    tokens?: Tokens;
+    user?: User;
+    accessToken?: string;
+    refreshToken?: string;
+    role?: string;
+    subscription?: SubscriptionInfo;
   };
-  statusCode: number;
-  timestamp: string;
-  path: string;
+  statusCode?: number;
+  timestamp?: string;
+  path?: string;
+  message?: string;
 }
 export interface VerifyOtpResponse {
   data: {
