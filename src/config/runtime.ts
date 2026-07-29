@@ -16,17 +16,8 @@ const readPublicEnv = (...keys: string[]) => {
   return "";
 };
 
-const getBrowserOrigin = () => {
-  if (typeof window === "undefined") {
-    return "";
-  }
-
-  return window.location.origin;
-};
-
 export const API_BASE_URL = normalizeBaseUrl(
   readPublicEnv("NEXT_PUBLIC_API_URL", "VITE_API_BASE_URL") ||
-  getBrowserOrigin() ||
   "https://api.feasiblerealestate.com"
 );
 
