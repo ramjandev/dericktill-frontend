@@ -12,9 +12,18 @@ const readPublicEnv = (...keys: string[]) => {
   return "";
 };
 
+const getBrowserOrigin = () => {
+  if (typeof window === "undefined") {
+    return "";
+  }
+
+  return window.location.origin;
+};
+
 export const API_BASE_URL = normalizeBaseUrl(
   readPublicEnv("NEXT_PUBLIC_API_URL", "VITE_API_BASE_URL") ||
-    "https://api.feasiblerealestate.com"
+  getBrowserOrigin() ||
+  "https://api.feasiblerealestate.com"
 );
 
 export const API_PREFIX = "/api/v1";
@@ -25,20 +34,24 @@ export const WHOP_CHECKOUT_URLS = {
   individualMonthly: readPublicEnv(
     "NEXT_PUBLIC_WHOP_INDIVIDUAL_MONTHLY_URL",
     "VITE_WHOP_INDIVIDUAL_MONTHLY_URL",
+    "https://sandbox.whop.com/checkout/plan_cHYzgxxRVYqDj"
   ),
   individualYearly: readPublicEnv(
     "NEXT_PUBLIC_WHOP_INDIVIDUAL_YEARLY_URL",
     "VITE_WHOP_INDIVIDUAL_YEARLY_URL",
+    "https://sandbox.whop.com/checkout/plan_BvfalY4xL60i3"
   ),
   business5: readPublicEnv(
     "NEXT_PUBLIC_WHOP_BUSINESS_5_URL",
     "VITE_WHOP_BUSINESS_5_URL",
     "VITE_WHOP_BUSINESS_5_SEATS_URL",
+    "https://sandbox.whop.com/checkout/plan_EGtbQkPp7P1jP"
   ),
   business10: readPublicEnv(
     "NEXT_PUBLIC_WHOP_BUSINESS_10_URL",
     "VITE_WHOP_BUSINESS_10_URL",
     "VITE_WHOP_BUSINESS_10_SEATS_URL",
+    "https://sandbox.whop.com/checkout/plan_R1MMCKh3WB0iX"
   ),
 } as const;
 
