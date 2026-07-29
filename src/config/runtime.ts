@@ -2,6 +2,10 @@ const normalizeBaseUrl = (value: string) => value.replace(/\/+$/, "");
 
 const readPublicEnv = (...keys: string[]) => {
   for (const key of keys) {
+    if (!/^NEXT_PUBLIC_|^VITE_/.test(key)) {
+      return key.trim();
+    }
+
     const value = import.meta.env[key];
 
     if (typeof value === "string" && value.trim()) {
