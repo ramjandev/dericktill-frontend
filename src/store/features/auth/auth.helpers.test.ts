@@ -41,6 +41,32 @@ test("extractExchangeSession reads the exact RTK Query unwrap response shape", (
   });
 });
 
+test("extractExchangeSession reads the exact real global exchange response envelope", () => {
+  const session = extractExchangeSession({
+    data: {
+      success: true,
+      data: {
+        tokens: {
+          accessToken: "access-jwt",
+          refreshToken: "refresh-jwt",
+        },
+        user: mockUser,
+      },
+    },
+    statusCode: 201,
+    timestamp: "2026-07-29T00:00:00.000Z",
+    path: "/api/v1/auth/whop/exchange",
+  });
+
+  assert.deepEqual(session, {
+    accessToken: "access-jwt",
+    refreshToken: "refresh-jwt",
+    user: mockUser,
+    role: "USER",
+    subscription: null,
+  });
+});
+
 test("extractExchangeSession does not treat data.result as the primary path", () => {
   const session = extractExchangeSession({
     success: true,
@@ -79,10 +105,9 @@ test("extractCurrentUserSession reads the exact auth me response shape", () => {
   });
 });
 
-test("extractCurrentUserSession rejects nested data.user for auth me", () => {
+test("extractCurrentUserSession reads wrapped auth me response shape", () => {
   const session = extractCurrentUserSession(
     {
-      success: true,
       data: {
         user: mockUser,
       },
@@ -93,5 +118,11 @@ test("extractCurrentUserSession rejects nested data.user for auth me", () => {
     },
   );
 
-  assert.equal(session, null);
+  assert.deepEqual(session, {
+    accessToken: "access-jwt",
+    refreshToken: "refresh-jwt",
+    user: mockUser,
+    role: "USER",
+    subscription: null,
+  });
 });

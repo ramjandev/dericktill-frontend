@@ -38,6 +38,23 @@ const normalizeSubscription = (value: unknown): SubscriptionInfo | null => {
   return null;
 };
 
+const getDataChain = (payload: unknown) => {
+  const chain: JsonObject[] = [];
+  let current = payload;
+
+  while (isObject(current)) {
+    chain.push(current);
+
+    if (!isObject(current.data)) {
+      break;
+    }
+
+    current = current.data;
+  }
+
+  return chain;
+};
+
 const readTokens = (value: unknown): Tokens | null => {
   if (!isObject(value) || !isObject(value.tokens)) {
     return null;
@@ -91,14 +108,6 @@ const readSubscription = (value: unknown): SubscriptionInfo | null => {
   return normalizeSubscription(value.subscription);
 };
 
-const extractWhopExchangePayload = (payload: unknown) => {
-  if (!isObject(payload) || !isObject(payload.data)) {
-    return null;
-  }
-
-  return payload.data;
-};
-
 const buildSession = (
   user: User | null,
   tokens: Partial<Tokens>,
@@ -120,7 +129,9 @@ const buildSession = (
 };
 
 export const extractExchangeSession = (payload: unknown) => {
-  const exchangePayload = extractWhopExchangePayload(payload);
+  const exchangePayload = getDataChain(payload).find(
+    (candidate) => Boolean(readTokens(candidate) && readUser(candidate)),
+  );
 
   if (!exchangePayload) {
     return null;
@@ -136,31 +147,37 @@ export const extractExchangeSession = (payload: unknown) => {
 export const extractCurrentUserSession = (
   payload: unknown,
   fallbackTokens: Tokens,
-) =>
-  buildSession(
-    readUser(payload),
+) => {
+  const currentUserPayload =
+    getDataChain(payload).find((candidate) => Boolean(readUser(candidate))) ??
+    null;
+
+  return buildSession(
+    readUser(currentUserPayload),
     fallbackTokens,
-    readSubscription(payload),
+    readSubscription(currentUserPayload),
   );
+};
 
 export const extractRefreshTokens = (payload: unknown): Tokens | null => {
-  const refreshPayload = extractWhopExchangePayload(payload) ?? payload;
-  const nestedTokens = readTokens(refreshPayload);
+  for (const candidate of getDataChain(payload)) {
+    const nestedTokens = readTokens(candidate);
 
-  if (nestedTokens) {
-    return nestedTokens;
+    if (nestedTokens) {
+      return nestedTokens;
+    }
+
+    const accessToken = readAccessToken(candidate);
+
+    if (accessToken) {
+      return {
+        accessToken,
+        refreshToken: readRefreshToken(candidate) ?? undefined,
+      };
+    }
   }
 
-  const accessToken = readAccessToken(refreshPayload);
-
-  if (!accessToken) {
-    return null;
-  }
-
-  return {
-    accessToken,
-    refreshToken: readRefreshToken(refreshPayload) ?? undefined,
-  };
+  return null;
 };
 
 export const getStoredAccessToken = () =>
