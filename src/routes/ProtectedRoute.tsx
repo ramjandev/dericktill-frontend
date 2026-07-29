@@ -1,11 +1,16 @@
-import { Outlet } from "react-router-dom";
+import { getStoredAccessToken } from "@/store/features/auth/auth.helpers";
+import { selectAccessToken } from "@/store/features/auth/auth.slice";
+import { useSelector } from "react-redux";
+import { Navigate, Outlet } from "react-router-dom";
 
 const ProtectedRoute = () => {
-  // const { accessToken } = useSelector((state: RootState) => state.auth);
+  const accessToken = useSelector(selectAccessToken);
+  const hasAccessToken = Boolean(accessToken ?? getStoredAccessToken());
 
-  // if (!accessToken) {
-  //   return <Navigate to="/login" replace />;
-  // }
+  if (!hasAccessToken) {
+    return <Navigate to="/login" replace />;
+  }
+
   return <Outlet />;
 };
 

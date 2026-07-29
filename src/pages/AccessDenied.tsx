@@ -1,8 +1,8 @@
 import CommonButton from "@/components/common/button/CommonButton";
 import CommonContainer from "@/components/common/CommonContainer";
 import CommonHeader from "@/components/common/header/CommonHeader";
-import { WHOP_CHECKOUT_URL } from "@/config/runtime";
-import { ArrowLeft, ExternalLink, ShieldOff } from "lucide-react";
+import { DEFAULT_WHOP_CHECKOUT_URL } from "@/config/runtime";
+import { ExternalLink, ShieldOff } from "lucide-react";
 import { useEffect, useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -11,6 +11,8 @@ const reasonCopy: Record<string, string> = {
     "An active Whop membership is required to access this workspace.",
   "owner-only": "This workspace is limited to approved owner accounts.",
   "subscription-inactive": "Your Whop subscription is not active right now.",
+  "subscription-required":
+    "You no longer have access. Please renew your Whop subscription.",
 };
 
 const sanitizeReason = (value: string | null) => {
@@ -61,17 +63,14 @@ const AccessDenied = () => {
             <CommonButton
               variant="secondary"
               className="w-full bg-white text-black"
-              onClick={() => navigate("/login", { replace: true })}
+              onClick={() => navigate("/", { replace: true })}
             >
-              <ArrowLeft size={16} />
-              Return to login
+              View pricing
             </CommonButton>
 
-            {WHOP_CHECKOUT_URL ? (
+            {DEFAULT_WHOP_CHECKOUT_URL ? (
               <a
-                href={WHOP_CHECKOUT_URL}
-                target="_blank"
-                rel="noreferrer"
+                href={DEFAULT_WHOP_CHECKOUT_URL}
                 className="inline-flex items-center justify-center gap-2 rounded-md border border-white/15 px-4 py-2 text-sm font-medium text-white/85 hover:text-white"
               >
                 <ExternalLink size={16} />

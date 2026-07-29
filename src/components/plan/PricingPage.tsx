@@ -1,13 +1,7 @@
 import { useState } from "react";
 
+import { WHOP_CHECKOUT_URLS } from "@/config/runtime";
 import { RxCheck } from "react-icons/rx";
-
-const CHECKOUT_URLS = {
-  individualMonthly: import.meta.env.VITE_WHOP_INDIVIDUAL_MONTHLY_URL ?? "",
-  individualYearly: import.meta.env.VITE_WHOP_INDIVIDUAL_YEARLY_URL ?? "",
-  business5Seats: import.meta.env.VITE_WHOP_BUSINESS_5_SEATS_URL ?? "",
-  business10Seats: import.meta.env.VITE_WHOP_BUSINESS_10_SEATS_URL ?? "",
-} as const;
 
 type BillingCycle = "monthly" | "yearly";
 
@@ -57,16 +51,23 @@ function FeatureList({ features }: { features: string[] }) {
 
 export default function PricingPage() {
   const [cycle, setCycle] = useState<BillingCycle>("monthly");
+  const redirectToCheckout = (url: string) => {
+    if (!url) {
+      return;
+    }
+
+    window.location.href = url;
+  };
 
   const individualPrice = cycle === "monthly" ? 10 : 110;
   const individualUrl =
     cycle === "monthly"
-      ? CHECKOUT_URLS.individualMonthly
-      : CHECKOUT_URLS.individualYearly;
+      ? WHOP_CHECKOUT_URLS.individualMonthly
+      : WHOP_CHECKOUT_URLS.individualYearly;
 
   const businessPlans: SeatPlan[] = [
-    { seats: 5, price: 25, url: CHECKOUT_URLS.business5Seats },
-    { seats: 10, price: 70, url: CHECKOUT_URLS.business10Seats },
+    { seats: 5, price: 25, url: WHOP_CHECKOUT_URLS.business5 },
+    { seats: 10, price: 70, url: WHOP_CHECKOUT_URLS.business10 },
   ];
 
   return (
@@ -136,14 +137,14 @@ export default function PricingPage() {
 
             <FeatureList features={INDIVIDUAL_FEATURES} />
 
-            <a
-              href={individualUrl}
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              type="button"
+              onClick={() => redirectToCheckout(individualUrl)}
+              disabled={!individualUrl}
               className="rounded-lg border border-[#E8A33D] py-2.5 text-center text-sm font-semibold text-[#E8A33D] transition hover:bg-[#E8A33D] hover:text-[#1a1305]"
             >
-              Get individual
-            </a>
+              {individualUrl ? "Get individual" : "Checkout unavailable"}
+            </button>
           </div>
 
           {/* Business plans */}
@@ -188,18 +189,18 @@ export default function PricingPage() {
 
               <FeatureList features={BUSINESS_FEATURES} />
 
-              <a
-                href={plan.url}
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                type="button"
+                onClick={() => redirectToCheckout(plan.url)}
+                disabled={!plan.url}
                 className={`rounded-lg py-2.5 text-center text-sm font-semibold transition ${
                   plan.seats === 5
                     ? "bg-[#E8A33D] text-[#1a1305] hover:bg-[#d4922f]"
                     : "border border-[#E8A33D] text-[#E8A33D] hover:bg-[#E8A33D] hover:text-[#1a1305]"
                 }`}
               >
-                Get business
-              </a>
+                {plan.url ? "Get business" : "Checkout unavailable"}
+              </button>
             </div>
           ))}
         </div>

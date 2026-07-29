@@ -14,7 +14,7 @@ const Login = () => {
 
   const handleWhopLogin = () => {
     setIsRedirecting(true);
-    window.location.assign(`${API_BASE_URL}/api/v1/auth/whop`);
+    window.location.href = `${API_BASE_URL}/api/v1/auth/whop`;
   };
 
   return (

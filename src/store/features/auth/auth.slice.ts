@@ -21,6 +21,10 @@ const initialState: AuthState = {
 };
 
 type SetUserPayload = AuthSession;
+type SetTokensPayload = {
+  accessToken: string;
+  refreshToken?: string | null;
+};
 
 const authSlice = createSlice({
   name: "auth",
@@ -40,6 +44,13 @@ const authSlice = createSlice({
       state.role = role ?? user.role ?? null;
       state.subscription = subscription ?? null;
     },
+    setTokens: (state, action: PayloadAction<SetTokensPayload>) => {
+      state.accessToken = action.payload.accessToken;
+
+      if ("refreshToken" in action.payload) {
+        state.refreshToken = action.payload.refreshToken ?? null;
+      }
+    },
     setResetToken: (state, action: PayloadAction<string>) => {
       state.resetToken = action.payload;
     },
@@ -57,7 +68,7 @@ const authSlice = createSlice({
   },
 });
 
-export const { setUser, logout, setResetToken, clearResetToken } =
+export const { setUser, setTokens, logout, setResetToken, clearResetToken } =
   authSlice.actions;
 
 // Selectors

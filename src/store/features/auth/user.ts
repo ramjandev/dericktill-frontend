@@ -10,13 +10,21 @@ export type LoginUser = {
   password: string;
 };
 
-// login user
-interface Tokens {
+export interface Tokens {
   accessToken: string;
   refreshToken?: string;
 }
 
-export type SubscriptionInfo = Record<string, unknown> | string;
+export type SubscriptionInfo =
+  | {
+      subscriptionStatus?: string;
+      subscriptionTier?: string;
+      seatCount?: number;
+      subscriptionEndsAt?: string;
+      cancelAtPeriodEnd?: boolean;
+      [key: string]: unknown;
+    }
+  | string;
 
 export interface User {
   userId: string;
@@ -50,11 +58,11 @@ interface AuthResult {
   subscription?: SubscriptionInfo;
 }
 
-export interface LoginResponse {
+export interface AuthApiResponse<T = AuthResult> {
   data?: {
     success?: boolean;
     message?: string;
-    result?: AuthResult;
+    result?: T;
     tokens?: Tokens;
     user?: User;
     accessToken?: string;
@@ -67,6 +75,15 @@ export interface LoginResponse {
   path?: string;
   message?: string;
 }
+
+export type LoginResponse = AuthApiResponse<AuthResult>;
+export type CurrentUserResponse = AuthApiResponse<AuthResult>;
+export type RefreshTokenResponse = AuthApiResponse<{
+  tokens?: Tokens;
+  accessToken?: string;
+  refreshToken?: string;
+}>;
+
 export interface VerifyOtpResponse {
   data: {
     success: boolean;

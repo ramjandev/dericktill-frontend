@@ -1,93 +1,18 @@
-import type { AuthSession, SubscriptionInfo, User } from "./user";
+import Cookies from "js-cookie";
+
+import type {
+  AuthSession,
+  SubscriptionInfo,
+  Tokens,
+  User,
+} from "./user";
 
 type JsonObject = Record<string, unknown>;
 
+const ACCESS_TOKEN_COOKIE_KEY = "accessToken";
+
 const isObject = (value: unknown): value is JsonObject =>
   typeof value === "object" && value !== null && !Array.isArray(value);
-
-const findStringByKey = (value: unknown, key: string): string | null => {
-  if (Array.isArray(value)) {
-    for (const item of value) {
-      const match = findStringByKey(item, key);
-      if (match) return match;
-    }
-    return null;
-  }
-
-  if (!isObject(value)) {
-    return null;
-  }
-
-  const current = value[key];
-  if (typeof current === "string" && current.trim()) {
-    return current;
-  }
-
-  for (const child of Object.values(value)) {
-    const match = findStringByKey(child, key);
-    if (match) return match;
-  }
-
-  return null;
-};
-
-const findValueByKeys = (value: unknown, keys: string[]): unknown => {
-  if (Array.isArray(value)) {
-    for (const item of value) {
-      const match = findValueByKeys(item, keys);
-      if (match !== undefined) return match;
-    }
-    return undefined;
-  }
-
-  if (!isObject(value)) {
-    return undefined;
-  }
-
-  for (const key of keys) {
-    if (key in value) {
-      const current = value[key];
-      if (current !== undefined && current !== null) {
-        return current;
-      }
-    }
-  }
-
-  for (const child of Object.values(value)) {
-    const match = findValueByKeys(child, keys);
-    if (match !== undefined) return match;
-  }
-
-  return undefined;
-};
-
-const findObjectByKeys = (value: unknown, keys: string[]): JsonObject | null => {
-  if (Array.isArray(value)) {
-    for (const item of value) {
-      const match = findObjectByKeys(item, keys);
-      if (match) return match;
-    }
-    return null;
-  }
-
-  if (!isObject(value)) {
-    return null;
-  }
-
-  for (const key of keys) {
-    const current = value[key];
-    if (isObject(current)) {
-      return current;
-    }
-  }
-
-  for (const child of Object.values(value)) {
-    const match = findObjectByKeys(child, keys);
-    if (match) return match;
-  }
-
-  return null;
-};
 
 const normalizeUser = (value: unknown): User | null => {
   if (!isObject(value)) {
@@ -113,44 +38,147 @@ const normalizeSubscription = (value: unknown): SubscriptionInfo | null => {
   return null;
 };
 
-export const extractAuthSession = (payload: unknown): AuthSession | null => {
-  const tokenContainer = findObjectByKeys(payload, ["tokens", "token"]);
-  const userContainer =
-    normalizeUser(findObjectByKeys(payload, ["user"])) ??
-    normalizeUser(findValueByKeys(payload, ["user"]));
-
-  const accessToken =
-    findStringByKey(payload, "accessToken") ??
-    (tokenContainer && typeof tokenContainer.accessToken === "string"
-      ? tokenContainer.accessToken
-      : null);
-
-  if (!accessToken || !userContainer) {
+const readTokens = (value: unknown): Tokens | null => {
+  if (!isObject(value) || !isObject(value.tokens)) {
     return null;
   }
 
-  const refreshTokenCandidate =
-    findStringByKey(payload, "refreshToken") ??
-    (tokenContainer && typeof tokenContainer.refreshToken === "string"
-      ? tokenContainer.refreshToken
-      : null);
+  const accessToken = value.tokens.accessToken;
+  const refreshToken = value.tokens.refreshToken;
 
-  const role =
-    findStringByKey(payload, "role") ??
-    (typeof userContainer.role === "string" ? userContainer.role : null);
-
-  const subscription = normalizeSubscription(
-    findValueByKeys(payload, ["subscription", "membership", "plan"]),
-  );
+  if (typeof accessToken !== "string" || !accessToken.trim()) {
+    return null;
+  }
 
   return {
     accessToken,
-    refreshToken: refreshTokenCandidate,
-    user: userContainer,
-    role,
-    subscription,
+    refreshToken:
+      typeof refreshToken === "string" && refreshToken.trim()
+        ? refreshToken
+        : undefined,
   };
 };
+
+const readAccessToken = (value: unknown): string | null => {
+  if (!isObject(value) || typeof value.accessToken !== "string") {
+    return null;
+  }
+
+  return value.accessToken.trim() ? value.accessToken : null;
+};
+
+const readRefreshToken = (value: unknown): string | null => {
+  if (!isObject(value) || typeof value.refreshToken !== "string") {
+    return null;
+  }
+
+  return value.refreshToken.trim() ? value.refreshToken : null;
+};
+
+const readUser = (value: unknown): User | null => {
+  if (!isObject(value)) {
+    return null;
+  }
+
+  return normalizeUser(value.user);
+};
+
+const readSubscription = (value: unknown): SubscriptionInfo | null => {
+  if (!isObject(value)) {
+    return null;
+  }
+
+  return normalizeSubscription(value.subscription);
+};
+
+const extractWhopExchangePayload = (payload: unknown) => {
+  if (!isObject(payload) || !isObject(payload.data)) {
+    return null;
+  }
+
+  return payload.data;
+};
+
+const buildSession = (
+  user: User | null,
+  tokens: Partial<Tokens>,
+  subscription?: SubscriptionInfo | null,
+): AuthSession | null => {
+  const accessToken = tokens.accessToken ?? null;
+
+  if (!user || !accessToken) {
+    return null;
+  }
+
+  return {
+    accessToken,
+    refreshToken: tokens.refreshToken ?? null,
+    user,
+    role: user.role ?? null,
+    subscription: subscription ?? null,
+  };
+};
+
+export const extractExchangeSession = (payload: unknown) => {
+  const exchangePayload = extractWhopExchangePayload(payload);
+
+  if (!exchangePayload) {
+    return null;
+  }
+
+  return buildSession(
+    readUser(exchangePayload),
+    readTokens(exchangePayload) ?? {},
+    readSubscription(exchangePayload),
+  );
+};
+
+export const extractCurrentUserSession = (
+  payload: unknown,
+  fallbackTokens: Tokens,
+) =>
+  buildSession(
+    readUser(payload),
+    fallbackTokens,
+    readSubscription(payload),
+  );
+
+export const extractRefreshTokens = (payload: unknown): Tokens | null => {
+  const refreshPayload = extractWhopExchangePayload(payload) ?? payload;
+  const nestedTokens = readTokens(refreshPayload);
+
+  if (nestedTokens) {
+    return nestedTokens;
+  }
+
+  const accessToken = readAccessToken(refreshPayload);
+
+  if (!accessToken) {
+    return null;
+  }
+
+  return {
+    accessToken,
+    refreshToken: readRefreshToken(refreshPayload) ?? undefined,
+  };
+};
+
+export const getStoredAccessToken = () =>
+  Cookies.get(ACCESS_TOKEN_COOKIE_KEY)?.trim() || null;
+
+export const storeAccessToken = (accessToken: string) => {
+  Cookies.set(ACCESS_TOKEN_COOKIE_KEY, accessToken, {
+    sameSite: "lax",
+    secure: window.location.protocol === "https:",
+  });
+};
+
+export const clearStoredAccessToken = () => {
+  Cookies.remove(ACCESS_TOKEN_COOKIE_KEY);
+};
+
+export const getSubscriptionSummary = (subscription: SubscriptionInfo | null) =>
+  isObject(subscription) ? subscription : null;
 
 export const extractApiErrorMessage = (error: unknown) => {
   if (!error || typeof error !== "object") {

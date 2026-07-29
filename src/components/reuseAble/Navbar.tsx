@@ -8,13 +8,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
+  clearStoredAccessToken,
+  getSubscriptionSummary,
+} from "@/store/features/auth/auth.helpers";
+import {
   logout,
   selectAccessToken,
+  selectSubscription,
   selectUser,
 } from "@/store/features/auth/auth.slice";
 import { useLogoutSessionMutation } from "@/store/features/auth/auth.api";
-import Cookies from "js-cookie";
-import { Home, KeyRound, LogIn, LogOut, UserCircle2 } from "lucide-react";
+import { Home, LogIn, LogOut, UserCircle2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { LuSave } from "react-icons/lu";
 import { useDispatch, useSelector } from "react-redux";
@@ -30,10 +34,12 @@ const navItems = [
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const token = useSelector(selectAccessToken);
+  const subscription = useSelector(selectSubscription);
   const user = useSelector(selectUser);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [logoutSession] = useLogoutSessionMutation();
+  const subscriptionSummary = getSubscriptionSummary(subscription);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -50,9 +56,9 @@ const Navbar = () => {
     } catch {
       // Clear the frontend state even if the backend token is already expired.
     } finally {
-      Cookies.remove("accessToken");
+      clearStoredAccessToken();
       dispatch(logout());
-      navigate("/login", { replace: true });
+      navigate("/", { replace: true });
     }
   };
 
@@ -129,15 +135,39 @@ const Navbar = () => {
 
                   <DropdownMenuSeparator />
 
-                  <DropdownMenuItem
-                    onClick={() => navigate("/change-password")}
-                    className="flex items-center gap-2 cursor-pointer py-2"
-                  >
-                    <KeyRound size={14} className="text-gray-500" />
-                    <span>Change Password</span>
-                  </DropdownMenuItem>
-
-                  <DropdownMenuSeparator />
+                  {subscriptionSummary ? (
+                    <>
+                      <div className="space-y-1.5 px-2 py-2 text-xs text-gray-600">
+                        {subscriptionSummary.subscriptionStatus ? (
+                          <p>
+                            Status: {String(subscriptionSummary.subscriptionStatus)}
+                          </p>
+                        ) : null}
+                        {subscriptionSummary.subscriptionTier ? (
+                          <p>Tier: {String(subscriptionSummary.subscriptionTier)}</p>
+                        ) : null}
+                        {typeof subscriptionSummary.seatCount === "number" ? (
+                          <p>Seats: {subscriptionSummary.seatCount}</p>
+                        ) : null}
+                        {subscriptionSummary.subscriptionEndsAt ? (
+                          <p>
+                            Ends:{" "}
+                            {new Date(
+                              String(subscriptionSummary.subscriptionEndsAt),
+                            ).toLocaleDateString()}
+                          </p>
+                        ) : null}
+                        {typeof subscriptionSummary.cancelAtPeriodEnd ===
+                        "boolean" ? (
+                          <p>
+                            Cancel at period end:{" "}
+                            {subscriptionSummary.cancelAtPeriodEnd ? "Yes" : "No"}
+                          </p>
+                        ) : null}
+                      </div>
+                      <DropdownMenuSeparator />
+                    </>
+                  ) : null}
 
                   <DropdownMenuItem
                     onClick={handleLogout}
