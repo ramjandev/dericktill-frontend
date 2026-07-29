@@ -14,7 +14,7 @@ const readPublicEnv = (...keys: string[]) => {
 
 export const API_BASE_URL = normalizeBaseUrl(
   readPublicEnv("NEXT_PUBLIC_API_URL", "VITE_API_BASE_URL") ||
-    "http://localhost:3000",
+    "https://api.feasiblerealestate.com"
 );
 
 export const API_PREFIX = "/api/v1";
