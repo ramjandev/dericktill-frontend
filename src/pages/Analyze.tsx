@@ -129,6 +129,7 @@ const DEFAULT_INPUTS: DealInputs = {
 const Analyze = () => {
   const [showCrimeData, setShowCrimeData] =
     useState<PropertyEnrichResponse | null>(null);
+  const [hudData, setHudData] = useState<HudResponse | undefined>();
 
   const [activeTab, setActiveTab] = useState<StrategyType>("BRRRR");
   const [inputs, setInputs] = useState<DealInputs>(DEFAULT_INPUTS);
@@ -222,36 +223,79 @@ const Analyze = () => {
     crimeScore: showCrimeData?.data.crime?.crimeScore ?? 0,
   });
 
+  // const buildSection8Payload = (data: DealInputsSchema): PropertySection8 => ({
+  //   stateAddress: data.streetAddress,
+  //   city: data.city,
+  //   state: data.state,
+  //   zipCode: data.zipCode,
+  //   bedRooms: data.bedrooms,
+  //   purchasePrice: data.purchasePrice,
+  //   downPayment: data.downPayment,
+  //   arvAfterRepairValue: data.arv ?? 0,
+  //   monthlyRent: data.monthlyRent,
+  //   rehabCost: data.rehabCost ?? 0,
+  //   annualPropertyTax: data.propertyTax ?? 0,
+  //   annualInsurance: data.insurance ?? 0,
+  //   annualUtilities: data.utilities ?? 0,
+  //   annualOtherExpense: data.otherExpenses ?? 0,
+  //   vacancyRate: data.vacancyRate,
+  //   maintenanceRate: data.maintenanceRate,
+  //   managementRate: data.propertyMgmtRate,
+  //   capexRate: data.capexRate,
+  //   interestRate: data.interestRate,
+  //   loanTerm: data.loanTerm,
+  //   refinanceLtv: data.refinanceLtv ?? 0,
+  //   refinanceInterestRate: data.refinanceInterestRate ?? 0,
+  //   refinanceLoanTerm: data.refinanceLoanTerm ?? 0,
+  //   closingCost: data.closingCost,
+  //   refinanceCost: data.refinanceCost ?? 0,
+  //   holdingCost: data.holdingCost,
+  //   crimeScore: showCrimeData?.data.crime?.crimeScore ?? 0,
+  // });
+
+  const hudFmr = hudData?.data?.fmr;
+  const hudFmrRent =
+    hudFmr?.studio ??
+    hudFmr?.oneBedroom ??
+    hudFmr?.twoBedroom ??
+    hudFmr?.threeBedroom ??
+    hudFmr?.fourBedroom ??
+    0;
+
   const buildSection8Payload = (data: DealInputsSchema): PropertySection8 => ({
     stateAddress: data.streetAddress,
     city: data.city,
     state: data.state,
     zipCode: data.zipCode,
     bedRooms: data.bedrooms,
+
     purchasePrice: data.purchasePrice,
+    downPaymentPercent: data.downPaymentPercent,
     downPayment: data.downPayment,
-    arvAfterRepairValue: data.arv ?? 0,
+
+    interestRate: data.interestRate,
+    loanTerm: data.loanTerm,
+
+    hudFmrRent,
+    section8Rent: data.section8Rent,
     monthlyRent: data.monthlyRent,
-    rehabCost: data.rehabCost ?? 0,
+
     annualPropertyTax: data.propertyTax ?? 0,
     annualInsurance: data.insurance ?? 0,
     annualUtilities: data.utilities ?? 0,
     annualOtherExpense: data.otherExpenses ?? 0,
+
     vacancyRate: data.vacancyRate,
     maintenanceRate: data.maintenanceRate,
     managementRate: data.propertyMgmtRate,
     capexRate: data.capexRate,
-    interestRate: data.interestRate,
-    loanTerm: data.loanTerm,
-    refinanceLtv: data.refinanceLtv ?? 0,
-    refinanceInterestRate: data.refinanceInterestRate ?? 0,
-    refinanceLoanTerm: data.refinanceLoanTerm ?? 0,
+
     closingCost: data.closingCost,
-    refinanceCost: data.refinanceCost ?? 0,
-    holdingCost: data.holdingCost,
+    rehabCost: data.rehabCost ?? 0,
+
+    avgCompRent: showCrimeData?.data.comps?.estimates?.rentEstimate ?? 0,
     crimeScore: showCrimeData?.data.crime?.crimeScore ?? 0,
   });
-
   const handleCalculate: SubmitHandler<DealInputsSchema> = async (data) => {
     try {
       // Enrich address to get crime data
@@ -340,7 +384,7 @@ const Analyze = () => {
         : "text-red-600";
 
   //Hud auto enrich
-  const [hudData, setHudData] = useState<HudResponse | undefined>();
+  // const [hudData, setHudData] = useState<HudResponse | undefined>();
   const [hudSection8, { isLoading: isHudEnrich }] = useHudSection8Mutation();
 
   const hudCacheRef = useRef<Map<string, HudResponse>>(new Map());

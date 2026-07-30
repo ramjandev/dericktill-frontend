@@ -344,7 +344,6 @@ const DealInputsPanel: React.FC<DealInputsPanelProps> = ({
               </div>
             </>
           )}
-
         </div>
       </CardContainer>
       {/* Operating Expenses */}
@@ -507,16 +506,18 @@ const DealInputsPanel: React.FC<DealInputsPanelProps> = ({
             />
             <Err field="closingCost" />
           </div>
-          <div>
-            <InputField
-              label="Refinance Cost"
-              value={inputs.refinanceCost ?? ""}
-              onChange={handleNum("refinanceCost")}
-              prefix="$"
-              placeholder="3000"
-            />
-            <Err field="refinanceCost" />
-          </div>
+          {dealType === "BRRRR" && (
+            <div>
+              <InputField
+                label="Refinance Cost"
+                value={inputs.refinanceCost ?? ""}
+                onChange={handleNum("refinanceCost")}
+                prefix="$"
+                placeholder="3000"
+              />
+              <Err field="refinanceCost" />
+            </div>
+          )}
           <div>
             <InputField
               label="Holding Cost"

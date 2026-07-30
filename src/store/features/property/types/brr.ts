@@ -61,6 +61,35 @@ export interface PropertyTurnkey {
   crimeScore: number;
 }
 
+// export interface PropertySection8 {
+//   stateAddress: string;
+//   city: string;
+//   state: string;
+//   zipCode: string;
+//   bedRooms: number;
+//   purchasePrice: number;
+//   downPayment: number;
+//   interestRate: number;
+//   loanTerm: number;
+//   rehabCost: number;
+//   arvAfterRepairValue: number;
+//   monthlyRent: number;
+//   annualPropertyTax: number;
+//   annualInsurance: number;
+//   annualUtilities: number;
+//   annualOtherExpense: number;
+//   vacancyRate: number;
+//   maintenanceRate: number;
+//   managementRate: number;
+//   capexRate: number;
+//   refinanceLtv: number;
+//   refinanceInterestRate: number;
+//   refinanceLoanTerm: number;
+//   closingCost: number;
+//   refinanceCost: number;
+//   holdingCost: number;
+//   crimeScore: number;
+// }
 export interface PropertySection8 {
   stateAddress: string;
   city: string;
@@ -68,11 +97,12 @@ export interface PropertySection8 {
   zipCode: string;
   bedRooms: number;
   purchasePrice: number;
+  downPaymentPercent: number;
   downPayment: number;
   interestRate: number;
   loanTerm: number;
-  rehabCost: number;
-  arvAfterRepairValue: number;
+  hudFmrRent: number;
+  section8Rent: number;
   monthlyRent: number;
   annualPropertyTax: number;
   annualInsurance: number;
@@ -82,12 +112,9 @@ export interface PropertySection8 {
   maintenanceRate: number;
   managementRate: number;
   capexRate: number;
-  refinanceLtv: number;
-  refinanceInterestRate: number;
-  refinanceLoanTerm: number;
   closingCost: number;
-  refinanceCost: number;
-  holdingCost: number;
+  rehabCost: number;
+  avgCompRent: number;
   crimeScore: number;
 }
 
