@@ -140,11 +140,14 @@ const Navbar = () => {
                       <div className="space-y-1.5 px-2 py-2 text-xs text-gray-600">
                         {subscriptionSummary.subscriptionStatus ? (
                           <p>
-                            Status: {String(subscriptionSummary.subscriptionStatus)}
+                            Status:{" "}
+                            {String(subscriptionSummary.subscriptionStatus)}
                           </p>
                         ) : null}
                         {subscriptionSummary.subscriptionTier ? (
-                          <p>Tier: {String(subscriptionSummary.subscriptionTier)}</p>
+                          <p>
+                            Tier: {String(subscriptionSummary.subscriptionTier)}
+                          </p>
                         ) : null}
                         {typeof subscriptionSummary.seatCount === "number" ? (
                           <p>Seats: {subscriptionSummary.seatCount}</p>
@@ -161,7 +164,9 @@ const Navbar = () => {
                         "boolean" ? (
                           <p>
                             Cancel at period end:{" "}
-                            {subscriptionSummary.cancelAtPeriodEnd ? "Yes" : "No"}
+                            {subscriptionSummary.cancelAtPeriodEnd
+                              ? "Yes"
+                              : "No"}
                           </p>
                         ) : null}
                       </div>

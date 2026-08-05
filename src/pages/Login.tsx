@@ -36,8 +36,8 @@ const Login = () => {
             </CommonHeader>
 
             <p className="mt-4 max-w-md text-sm leading-7 text-white/72">
-              Sign in with your Whop account to verify membership and access
-              the protected workspace.
+              Sign in with your Whop account to verify membership and access the
+              protected workspace.
             </p>
 
             <div className="mt-6 max-w-md rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-sm leading-6 text-white/70">

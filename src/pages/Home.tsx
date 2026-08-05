@@ -49,7 +49,7 @@ const Home = () => {
             className="
             text-3xl sm:text-5xl md:text-6xl 
             leading-tight sm:leading-tight md:leading-[1.2]
-    text-center bg-gradient-to-r from-[#101828] to-[#364153] 
+    text-center bg-linear-to-r from-[#101828] to-[#364153] 
     bg-clip-text text-white font-bold
     mb-4 max-w-3xl
   "
@@ -70,7 +70,7 @@ const Home = () => {
             </Link>
             <Link
               to="/saved"
-              className="bg-white text-black text-base font-semibold px-7 py-3 rounded-[8px] transition-all flex items-center justify-center    "
+              className="bg-white text-black text-base font-semibold px-7 py-3 rounded-xl transition-all flex items-center justify-center    "
             >
               View Sample Deals
             </Link>
@@ -83,7 +83,7 @@ const Home = () => {
             {features.map(({ icon: Icon, title, desc, color, iconColor }) => (
               <div
                 key={title}
-                className="h-[234px] rounded-[14px] border-[1.173px] border-[#F3F4F6] bg-white shadow-[0_1px_3px_0_rgba(0,0,0,0.10),0_1px_2px_-1px_rgba(0,0,0,0.10)] flex flex-col p-8"
+                className="h-58.5 rounded-[14px] border-[1.173px] border-[#F3F4F6] bg-white shadow-[0_1px_3px_0_rgba(0,0,0,0.10),0_1px_2px_-1px_rgba(0,0,0,0.10)] flex flex-col p-8"
               >
                 <div
                   className={`w-11 h-11 ${color} rounded-xl flex items-center justify-center mb-4`}

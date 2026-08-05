@@ -5,16 +5,19 @@ import Login from "@/pages/Login";
 import NotFound from "@/pages/NotFound";
 import SavedDealsPage from "@/pages/SavedDealsPage";
 import WhopCallback from "@/pages/auth/WhopCallback";
+
 import { Navigate, createBrowserRouter } from "react-router-dom";
 import App from "../App";
 import ProtectedRoute from "./ProtectedRoute";
+import LandingLayout from "@/components/layout/LandingLayout";
+import LandingPageTwo from "@/pages/LandingPageTwo";
 
 const routes = createBrowserRouter([
   {
     path: "/",
     element: <App />,
     children: [
-      { index: true, element: <Home /> },
+      { path: "app", element: <Home /> },
 
       {
         element: <ProtectedRoute />,
@@ -40,6 +43,15 @@ const routes = createBrowserRouter([
       { path: "reset-password", element: <Navigate to="/login" replace /> },
 
       { path: "*", element: <NotFound /> },
+    ],
+  },
+  {
+    element: <LandingLayout />,
+    children: [
+      {
+        index: true,
+        element: <LandingPageTwo />,
+      },
     ],
   },
 ]);
