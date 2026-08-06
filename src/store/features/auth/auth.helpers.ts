@@ -45,11 +45,13 @@ const getDataChain = (payload: unknown) => {
   while (isObject(current)) {
     chain.push(current);
 
-    if (!isObject(current.data)) {
+    if (isObject(current.data)) {
+      current = current.data;
+    } else if (isObject(current.result)) {
+      current = current.result;
+    } else {
       break;
     }
-
-    current = current.data;
   }
 
   return chain;

@@ -112,7 +112,7 @@ const WhopCallback = () => {
 
         window.history.replaceState({}, document.title, location.pathname);
         processedCodes.add(code);
-        navigate("/analyze", { replace: true });
+        navigate("/app", { replace: true });
       } catch (error) {
         const authStatus = getAuthStatus(error);
         const safeMessage = extractApiErrorMessage(error);
@@ -157,7 +157,7 @@ const WhopCallback = () => {
   }, [code, dispatch, exchangeWhopCode, location.pathname, navigate, triggerVerification]);
 
   if (token && !code) {
-    return <Navigate to="/analyze" replace />;
+    return <Navigate to="/app" replace />;
   }
 
   return (
