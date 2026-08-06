@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 import defaultHeroImg from "@/assets/images/hero.png";
 import defaultHeroShape from "@/assets/images/hero-shape.png";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { selectAccessToken } from "@/store/features/auth/auth.slice";
 
 export interface HeroSectionProps {
   badgeText?: string;
@@ -34,6 +36,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
 }) => {
   const [imgSrc, setImgSrc] = React.useState<string>(heroImageSrc);
   const [shapeSrc, setShapeSrc] = React.useState<string>(heroShapeSrc);
+  const token = useSelector(selectAccessToken);
 
   return (
     <section
@@ -93,7 +96,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
             {/* Action Buttons */}
             <div className="flex flex-wrap items-center gap-4 mb-8 w-full sm:w-auto">
               <Link
-                to={whopUrl}
+                to={token ? "/app" : whopUrl}
                 className="w-full sm:w-auto inline-flex items-center justify-center px-7 py-3.5 text-base font-semibold text-white transition-all duration-300 rounded-xl border border-[#00D1B2]/40 bg-[linear-gradient(180deg,#005D63_0%,#003337_100%)] hover:bg-[linear-gradient(180deg,#00767E_0%,#00444A_100%)] hover:border-[#00D1B2]/70 hover:shadow-[0_0_25px_rgba(0,209,178,0.35)] active:scale-[0.98]"
               >
                 Get Access on Whop
