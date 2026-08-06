@@ -1,10 +1,5 @@
 import logo from "@/assets/images/logo.png";
-import {
-  FaDiscord,
-  FaInstagram,
-  FaTiktok,
-  FaYoutube,
-} from "react-icons/fa";
+import { FaDiscord, FaInstagram, FaTiktok, FaYoutube } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 const Footer = () => {
@@ -151,7 +146,7 @@ const Footer = () => {
             <ul className="flex flex-col gap-3.5 text-sm sm:text-base font-normal text-white/80">
               <li>
                 <a
-                  href="#whop"
+                  href="/login"
                   className="hover:text-white transition-colors duration-200 inline-block"
                 >
                   Get Access (Whop)
@@ -167,7 +162,8 @@ const Footer = () => {
               </li>
               <li>
                 <a
-                  href="#discord"
+                  href="https://discord.gg/I809xdNWs"
+                  target="_blank"
                   className="hover:text-white transition-colors duration-200 inline-block"
                 >
                   Free Discord
