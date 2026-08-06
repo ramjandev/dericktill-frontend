@@ -1,8 +1,12 @@
 import ctaImg from "@/assets/images/cta.png";
 import { FaDiscord } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { selectAccessToken } from "@/store/features/auth/auth.slice";
 
 function CTA() {
+  const token = useSelector(selectAccessToken);
+
   return (
     <section className="w-full bg-[#021329] py-16 md:py-24 lg:py-28 relative overflow-hidden">
       {/* Background image overlay */}
@@ -30,7 +34,7 @@ function CTA() {
           {/* Action Buttons */}
           <div className="flex flex-wrap items-center justify-center gap-4 mt-8">
             <Link
-              to="/login"
+              to={token ? "/app" : "/login"}
               className="bg-linear-to-b from-[#0E6C67] to-[#074744] hover:from-[#117C76] hover:to-[#0A5652] text-white font-medium text-sm px-7 py-3 rounded-lg border border-[#148780]/40 shadow-lg shadow-[#063836]/40 transition-all duration-200 cursor-pointer"
             >
               Get Access on Whop
