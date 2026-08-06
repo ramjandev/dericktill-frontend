@@ -22,31 +22,31 @@ function Section82() {
               REAL MARKET DATA
             </p>
 
-            <h3 className="text-white text-[60px] font-bold leading-tight font-inter mb-7.5">
+            <h3 className="text-white text-[27px] md:text-[60px] font-bold leading-tight font-inter mb-7.5">
               Comps pulled from
               <span className="text-[#0FC1CA]"> real sales data,</span> not
               guesses.
             </h3>
-            <p className="text-[19px] text-[#D1D0D0] mb-7.5">
+            <p className="text-sm md:text-[19px] text-[#D1D0D0] mb-7.5">
               Our COMPS data shows you what comparable properties actually sold
               for — so your ARV and purchase price decisions are backed by
               market reality, not wishful thinking.
             </p>
             <div>
               <ul>
-                <li className="text-[19px] text-[#D1D0D0] flex gap-1 items-center mb-3.5">
+                <li className="text-sm md:text-[19px] text-[#D1D0D0] flex gap-1 items-center mb-3.5">
                   <CircleCheck className="text-[#0FC1CA] mr-4.75 shrink-0" />
                   Comparable sales pulled from real market transactions
                 </li>
-                <li className="text-[19px] text-[#D1D0D0] flex gap-1 items-center mb-3.5">
+                <li className="text-sm md:text-[19px] text-[#D1D0D0] flex gap-1 items-center mb-3.5">
                   <CircleCheck className="text-[#0FC1CA] mr-4.75 shrink-0" />
                   Filter by property type, bedrooms, and distance
                 </li>
-                <li className="text-[19px] text-[#D1D0D0] flex gap-1 items-center mb-3.5">
+                <li className="text-sm md:text-[19px] text-[#D1D0D0] flex gap-1 items-center mb-3.5">
                   <CircleCheck className="text-[#0FC1CA] mr-4.75 shrink-0" />
                   Automatic ARV estimation based on comps
                 </li>
-                <li className="text-[19px] text-[#D1D0D0] flex gap-1 items-center mb-3.5">
+                <li className="text-sm md:text-[19px] text-[#D1D0D0] flex gap-1 items-center mb-3.5">
                   <CircleCheck className="text-[#0FC1CA] mr-4.75 shrink-0" />
                   Paired with Section 8 data for the full picture
                 </li>

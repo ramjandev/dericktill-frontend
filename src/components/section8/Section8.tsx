@@ -23,11 +23,11 @@ function Section8() {
             >
               BIGGEST DIFFERENTIATOR
             </p>
-            <h3 className="text-white text-[60px] font-bold leading-tight font-inter mb-7.5">
+            <h3 className="text-white text-[27px] md:text-[60px] font-bold leading-tight font-inter mb-7.5">
               The only analyzer with built-in
               <span className="text-[#0FC1CA]"> Section 8 / HUD data.</span>
             </h3>
-            <p className="text-[19px] text-[#D1D0D0] mb-7.5">
+            <p className="text-sm md:text-[19px] text-[#D1D0D0] mb-7.5">
               Most analyzers guess at rental income. Ours pulls real HUD Fair
               Market Rents by bedroom count and zip code — so your Section 8
               projections are grounded in actual government data, not optimistic
@@ -35,19 +35,19 @@ function Section8() {
             </p>
             <div>
               <ul>
-                <li className="text-[19px] text-[#D1D0D0] flex gap-1 items-center mb-3.5">
+                <li className="text-sm md:text-[19px] text-[#D1D0D0] flex gap-1 items-center mb-3.5">
                   <CircleCheck className="text-[#0FC1CA] mr-4.75" />
                   Live HUD Fair Market Rent by zip code & bedroom count
                 </li>
-                <li className="text-[19px] text-[#D1D0D0] flex gap-1 items-center mb-3.5">
+                <li className="text-sm md:text-[19px] text-[#D1D0D0] flex gap-1 items-center mb-3.5">
                   <CircleCheck className="text-[#0FC1CA] mr-4.75" />
                   Automatic Section 8 income modeling
                 </li>
-                <li className="text-[19px] text-[#D1D0D0] flex gap-1 items-center mb-3.5">
+                <li className="text-sm md:text-[19px] text-[#D1D0D0] flex gap-1 items-center mb-3.5">
                   <CircleCheck className="text-[#0FC1CA] mr-4.75" />
                   Compare Section 8 vs market rent side by side
                 </li>
-                <li className="text-[19px] text-[#D1D0D0] flex gap-1 items-center mb-3.5">
+                <li className="text-sm md:text-[19px] text-[#D1D0D0] flex gap-1 items-center mb-3.5">
                   <CircleCheck className="text-[#0FC1CA] mr-4.75" />
                   Updated with latest HUD payment schedules
                 </li>
