@@ -90,7 +90,7 @@ function normalizeResponse(
 
     return {
       monthlyCashFlow: d?.monthlyCashFlow_m ?? 0,
-      annualROI: d?.postRefiCoC_m ?? 0,
+      annualROI: d?.incomeExpance?.netCashFlow?.annual ?? 0,
       cocReturn: d?.postRefiCoC_m ?? 0,
       capRate: d?.capRate_m ?? 0,
       dscr: d?.DSCR_m ?? 0,
@@ -151,7 +151,7 @@ function normalizeResponse(
 
     return {
       monthlyCashFlow: km.monthlyCashFlow ?? 0,
-      annualROI: km.CashOnCashReturn ?? 0,
+      annualROI: ie?.netCashFlow?.annual ?? 0,
       cocReturn: km.CashOnCashReturn ?? 0,
       capRate: km.capRate ?? 0,
       dscr: km.DSCR ?? 0,
@@ -283,7 +283,7 @@ const DealResultsPanel: React.FC<DealResultsPanelProps> = ({
       <div className="flex-1 space-y-6">
         <KeyMetricsCard
           monthlyCashFlow={results.monthlyCashFlow}
-          annualNetCashFlow={results.annualROI ? `${results.annualROI}` : null}
+          annualNetCashFlow={results.annualROI != null ? `${results.annualROI}` : null}
           cashOnCashReturn={results.cocReturn}
           postRefiCoC={results.cocReturn ? `${results.capex}` : null}
           capRate={results.capRate}
