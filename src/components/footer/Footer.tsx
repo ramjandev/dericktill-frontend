@@ -1,9 +1,9 @@
 import logo from "@/assets/images/logo.png";
 import {
-  FaFacebookF,
+  FaDiscord,
   FaInstagram,
-  FaTwitter,
-  FaLinkedinIn,
+  FaTiktok,
+  FaYoutube,
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
@@ -105,16 +105,16 @@ const Footer = () => {
             {/* Social Media Links */}
             <div className="flex items-center gap-4 text-white">
               <a
-                href="https://facebook.com"
+                href="https://discord.gg/I809xdNWs"
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Facebook"
+                aria-label="Discord"
                 className="hover:text-white transition-all duration-200 transform hover:scale-110 p-1"
               >
-                <FaFacebookF className="w-4 h-4" />
+                <FaDiscord className="w-4.5 h-4.5" />
               </a>
               <a
-                href="https://instagram.com"
+                href="https://www.instagram.com/feasiblerealestate?utm_source=qr"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram"
@@ -123,22 +123,22 @@ const Footer = () => {
                 <FaInstagram className="w-4.5 h-4.5" />
               </a>
               <a
-                href="https://twitter.com"
+                href="https://www.tiktok.com/@feasiblerealestate?_r=1&_t=ZP-9BdOFIJOcOt"
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Twitter"
+                aria-label="TikTok"
                 className="hover:text-white transition-all duration-200 transform hover:scale-110 p-1"
               >
-                <FaTwitter className="w-4 h-4" />
+                <FaTiktok className="w-4 h-4" />
               </a>
               <a
-                href="https://linkedin.com"
+                href="https://www.youtube.com/@FeasibleRealEstate"
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="LinkedIn"
+                aria-label="YouTube"
                 className="hover:text-white transition-all duration-200 transform hover:scale-110 p-1"
               >
-                <FaLinkedinIn className="w-4 h-4" />
+                <FaYoutube className="w-4.5 h-4.5" />
               </a>
             </div>
           </div>
