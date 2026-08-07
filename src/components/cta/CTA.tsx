@@ -41,7 +41,7 @@ function CTA() {
             </Link>
 
             <a
-              href={"https://discord.gg/I809xdNWs"}
+              href={"https://discord.com/invite/w7zujrsAa9"}
               target="_blank"
               rel="noopener noreferrer"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 text-base font-semibold text-slate-900 bg-white hover:bg-slate-100 transition-all duration-300 rounded-xl shadow-md hover:shadow-lg active:scale-[0.98]"
