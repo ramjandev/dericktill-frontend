@@ -100,7 +100,7 @@ const Footer = () => {
             {/* Social Media Links */}
             <div className="flex items-center gap-4 text-white">
               <a
-                href="https://discord.gg/I809xdNWs"
+                href="https://discord.com/invite/w7zujrsAa9"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Discord"
@@ -162,7 +162,7 @@ const Footer = () => {
               </li>
               <li>
                 <a
-                  href="https://discord.gg/I809xdNWs"
+                  href="https://discord.com/invite/w7zujrsAa9"
                   target="_blank"
                   className="hover:text-white transition-colors duration-200 inline-block"
                 >
